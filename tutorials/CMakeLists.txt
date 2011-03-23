@@ -34,6 +34,7 @@ set(TESTS
   queue_tests
   binary_tree_tests
   hash_table_tests
+  red_black_tree_tests
   # uri_tests
   concurrent_queue_tests
   )

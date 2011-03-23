@@ -22,16 +22,16 @@ BOOST_AUTO_TEST_CASE(constructor_test) {
     BOOST_CHECK(instance.empty());
 }
 
-// BOOST_AUTO_TEST_CASE(insert_test) {
-//     red_black_tree<int, int, std::less<int> > instance;
-//     BOOST_CHECK(instance.insert(1, 2));
-//     BOOST_CHECK_EQUAL(instance.count(), 1U);
-//     BOOST_CHECK_EQUAL(instance.minimum()->key, 1);
-//     BOOST_CHECK_EQUAL(instance.minimum()->value, 2);
-//     BOOST_CHECK_EQUAL(instance.maximum()->key, 1);
-//     BOOST_CHECK_EQUAL(instance.maximum()->value, 2);
-// }
-//
+BOOST_AUTO_TEST_CASE(insert_test) {
+    red_black_tree<int, int, std::less<int> > instance;
+    BOOST_CHECK(instance.insert(1, 2));
+    BOOST_CHECK_EQUAL(instance.count(), 1U);
+    BOOST_CHECK_EQUAL(instance.minimum()->key, 1);
+    BOOST_CHECK_EQUAL(instance.minimum()->value, 2);
+    BOOST_CHECK_EQUAL(instance.maximum()->key, 1);
+    BOOST_CHECK_EQUAL(instance.maximum()->value, 2);
+}
+
 // BOOST_AUTO_TEST_CASE(insert_2_test) {
 //     red_black_tree<int, int, std::less<int> > instance;
 //     BOOST_CHECK(instance.insert(1, 2));
