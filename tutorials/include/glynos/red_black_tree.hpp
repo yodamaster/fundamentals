@@ -22,6 +22,9 @@ class red_black_tree {
 
     class node_type
         : public std::enable_shared_from_this<node_type> {
+
+    public:
+
         node_type(const Key &key, const Value &value, const Compare &compare)
             : compare(compare),
               key(key),
