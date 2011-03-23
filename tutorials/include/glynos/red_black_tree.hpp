@@ -27,8 +27,8 @@ class red_black_tree {
 
         node_type(const Key &key, const Value &value, const Compare &compare)
             : compare(compare),
-              key(key),
-              value(value) {
+              key(new Key(key)),
+              value(new Value(value)) {
 
         }
 
@@ -82,7 +82,8 @@ public:
     }
 
     bool insert(const Key &key, const Value &value) {
-        return false;
+        root_.reset(new node_type(key, value, compare_));
+        return true;
     }
 
     std::shared_ptr<node_type> find(const Key &key) {
@@ -94,11 +95,11 @@ public:
     }
 
     std::shared_ptr<node_type> minimum() {
-        return std::shared_ptr<node_type>();
+        return root_;
     }
 
     std::shared_ptr<node_type> maximum() {
-        return std::shared_ptr<node_type>();
+        return root_;
     }
 
     template <
@@ -141,7 +142,7 @@ public:
     }
 
     unsigned int count() {
-        return root_? root_->count() : 0;
+        return root_? 1U : 0U;
     }
 
 private:

@@ -11,6 +11,7 @@
 # include <algorithm>
 # include <memory>
 # include <glynos/queue.hpp>
+# include <glynos/stack.hpp>
 
 
 namespace glynos {
@@ -102,37 +103,37 @@ public:
             return node;
         }
 
-        void remove(const Key &key) {
-            std::shared_ptr<node_type> node = find(key);
-            if (node) {
-                // if it's a leaf, just remove it
-                if (!node->left && !node->right) {
-                    if (node->shared_from_this() == node->parent->left) {
-                        node->parent->left.reset();
-                    }
-                    else if (node->shared_from_this() == node->parent->right) {
-                        node->parent->right.reset();
-                    }
-                }
-                else if (node->left && node->left) {
-
-                }
-                else if (node->left) {
-                    if (node->shared_from_this() == node->parent->left) {
-                        node->parent->left = node->left;
-                    }
-                    else if (node->shared_from_this() == node->parent->right) {
-                        node->parent->right = node->left;
-                    }
-                }
-                else if (node->right) {
-                    // std;:shared_ptr<node_type> tmp = node;
-                    // while (tmp->right) {
-                    //     node
-                    // }
-                }
-            }
-        }
+        // void remove(const Key &key) {
+        //     std::shared_ptr<node_type> node = find(key);
+        //     if (node) {
+        //         // if it's a leaf, just remove it
+        //         if (!node->left && !node->right) {
+        //             if (node->shared_from_this() == node->parent->left) {
+        //                 node->parent->left.reset();
+        //             }
+        //             else if (node->shared_from_this() == node->parent->right) {
+        //                 node->parent->right.reset();
+        //             }
+        //         }
+        //         else if (node->left && node->left) {
+        //
+        //         }
+        //         else if (node->left) {
+        //             if (node->shared_from_this() == node->parent->left) {
+        //                 node->parent->left = node->left;
+        //             }
+        //             else if (node->shared_from_this() == node->parent->right) {
+        //                 node->parent->right = node->left;
+        //             }
+        //         }
+        //         else if (node->right) {
+        //             // std;:shared_ptr<node_type> tmp = node;
+        //             // while (tmp->right) {
+        //             //     node
+        //             // }
+        //         }
+        //     }
+        // }
 
         std::shared_ptr<node_type> minimum() {
             std::shared_ptr<node_type> node = this->shared_from_this();
@@ -167,7 +168,7 @@ public:
         template <
             class Func
             >
-        void inorder_walk(const Func &func) {
+        void inorder_walk_1(const Func &func) {
             // this implementation doesn't use a stack, or recursion,
             // but does modify the original structure.
             std::shared_ptr<node_type> node = this->shared_from_this(), pre;
@@ -190,6 +191,33 @@ public:
                         pre->right.reset();
                         func(*node->key, *node->value);
                         node = node->right;
+                    }
+                }
+            }
+        }
+
+        template <
+            class Func
+            >
+        void inorder_walk_2(const Func &func) {
+            // uses a stack, doesn't modify structure
+            stack<std::shared_ptr<node_type> > nodes;
+            std::shared_ptr<node_type> node = this->shared_from_this();
+
+            while (true) {
+                if (node) {
+                    nodes.push(node);
+                    node = node->left;
+                }
+                else {
+                    if (!nodes.empty()) {
+                        node = nodes.top();
+                        nodes.pop();
+                        func(*node->key, *node->value);
+                        node = node->right;
+                    }
+                    else {
+                        break;
                     }
                 }
             }
@@ -311,8 +339,25 @@ public:
     }
 
     void remove(const Key &key) {
-        if (!empty()) {
-            root_->remove(key);
+        std::shared_ptr<node_type> node = find(key);
+        if (key) {
+            if (!node->left) {
+                transplant(node, node->right);
+            }
+            else if (!node->right) {
+                transplant(node, node->left);
+            }
+            else {
+                std::shared_ptr<node_type> y = node->right->minimum();
+                if (y->parent != node) {
+                    transplant(y, y->right);
+                    y->right = node->right;
+                    y->right->parent = y;
+                }
+                transplant(node, y);
+                y->left = node->left;
+                y->left->parent = y;
+            }
         }
     }
 
@@ -344,7 +389,7 @@ public:
         >
     void inorder_walk(const Func &func) {
         if (!empty()) {
-            root_->inorder_walk(func);
+            root_->inorder_walk_2(func);
         }
     }
 
@@ -382,6 +427,22 @@ public:
     }
 
 private:
+
+    void transplant(std::shared_ptr<node_type> u,
+                    std::shared_ptr<node_type> v) {
+        if (!u->parent) {
+            root_ = v;
+        }
+        else if (u == u->parent->left) {
+            u->parent->left = v;
+        }
+        else {
+            u->parent->right = v;
+        }
+        if (v) {
+            v->parent = u->parent;
+        }
+    }
 
     std::shared_ptr<node_type> root_;
     Compare compare_;

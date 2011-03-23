@@ -43,20 +43,20 @@ BOOST_AUTO_TEST_CASE(constructor_test) {
 }
 
 BOOST_AUTO_TEST_CASE(insert_test) {
-    hash_table<int, int, Hash> instance(100, &my_hash);
+    hash_table<int, int, Hash> instance(100000, &my_hash);
     BOOST_CHECK(instance.insert(1, 2));
     BOOST_CHECK_EQUAL(instance.count(), 1U);
 }
 
 BOOST_AUTO_TEST_CASE(insert_2_test) {
-    hash_table<int, int, Hash> instance(100, &my_hash);
+    hash_table<int, int, Hash> instance(100000, &my_hash);
     BOOST_CHECK(instance.insert(1, 2));
     BOOST_CHECK(instance.insert(4, 8));
     BOOST_CHECK_EQUAL(instance.count(), 2U);
 }
 
 BOOST_AUTO_TEST_CASE(insert_3_test) {
-    hash_table<int, int, Hash> instance(100, &my_hash);
+    hash_table<int, int, Hash> instance(100000, &my_hash);
     BOOST_CHECK(instance.insert(1, 2));
     BOOST_CHECK(instance.insert(4, 8));
     BOOST_CHECK(instance.insert(2, 4));
@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_CASE(insert_3_test) {
 }
 
 BOOST_AUTO_TEST_CASE(walk_test) {
-    hash_table<int, int, Hash> instance(100, &my_hash);
+    hash_table<int, int, Hash> instance(100000, &my_hash);
     BOOST_CHECK(instance.insert(5, 10));
     BOOST_CHECK(instance.insert(0, 0));
     BOOST_CHECK(instance.insert(6, 12));
@@ -87,12 +87,10 @@ BOOST_AUTO_TEST_CASE(walk_test) {
     l1.add_tail(9);
     l1.add_tail(8);
     l1.add_tail(7);
-    instance.walk(std::cout << arg1 << ", ");
-    std::cout << std::endl;
 }
 
 BOOST_AUTO_TEST_CASE(remove_test) {
-    hash_table<int, int, Hash> instance(100, &my_hash);
+    hash_table<int, int, Hash> instance(100000, &my_hash);
     BOOST_CHECK(instance.insert(5, 10));
     BOOST_CHECK(instance.insert(0, 0));
     BOOST_CHECK(instance.insert(6, 12));
@@ -105,6 +103,5 @@ BOOST_AUTO_TEST_CASE(remove_test) {
     BOOST_CHECK(instance.insert(4, 8));
     instance.remove(8);
     BOOST_CHECK_EQUAL(instance.count(), 9U);
-    instance.walk(std::cout << arg1 << ", ");
-    std::cout << std::endl;
+    BOOST_CHECK(!instance.find(8));
 }

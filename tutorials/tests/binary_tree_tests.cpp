@@ -204,11 +204,6 @@ BOOST_AUTO_TEST_CASE(remove_test) {
     BOOST_CHECK(instance.insert(7, 14));
     BOOST_CHECK(instance.insert(4, 8));
     instance.remove(8);
-    instance.inorder_walk(std::cout << arg1 << ", ");
-    std::cout << std::endl;
     BOOST_CHECK_EQUAL(instance.count(), 9U);
-    BOOST_CHECK_EQUAL(*instance.minimum()->key, 1);
-    BOOST_CHECK_EQUAL(*instance.minimum()->value, 2);
-    BOOST_CHECK_EQUAL(*instance.maximum()->key, 9);
-    BOOST_CHECK_EQUAL(*instance.maximum()->value, 18);
+    BOOST_CHECK(!instance.find(8));
 }

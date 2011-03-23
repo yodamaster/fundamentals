@@ -17,9 +17,6 @@ set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -g")
 
 set(EXAMPLES
   boost_range_algorithm
-  my_quicksort2
-  my_mergesort2
-  my_mergesort4
   )
 
 foreach(example ${EXAMPLES})
@@ -35,7 +32,6 @@ set(TESTS
   binary_tree_tests
   hash_table_tests
   red_black_tree_tests
-  # uri_tests
   concurrent_queue_tests
   )
 
