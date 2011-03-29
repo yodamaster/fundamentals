@@ -10,6 +10,7 @@
 
 # include <algorithm>
 # include <memory>
+# include <glynos/binary_tree/node.hpp>
 
 
 namespace glynos {
@@ -20,15 +21,18 @@ template <
     >
 class red_black_tree {
 
-    class node_type
-        : public std::enable_shared_from_this<node_type> {
+    enum Color { Red, Black };
 
+public:
+
+    typedef Key key_type;
+    typedef Value value_type;
+
+    class node_type : public binary_tree_node<Key, Value, Compare> {
     public:
 
         node_type(const Key &key, const Value &value, const Compare &compare)
-            : compare(compare),
-              key(new Key(key)),
-              value(new Value(value)) {
+            : binary_tree_node<Key, Value, Compare>(key, value, compare) {
 
         }
 
@@ -36,17 +40,8 @@ class red_black_tree {
 
         }
 
-        std::shared_ptr<node_type> parent, left, right;
-        const Compare &compare;
-        std::shared_ptr<const Key> key;
-        std::shared_ptr<Value> value;
-
-        enum Color { Red, Black };
         Color color;
-
     };
-
-public:
 
     red_black_tree() {
 
@@ -87,6 +82,9 @@ public:
     }
 
     std::shared_ptr<node_type> find(const Key &key) {
+        if (!empty()) {
+            return root_->find(key);
+        }
         return std::shared_ptr<node_type>();
     }
 
@@ -95,46 +93,60 @@ public:
     }
 
     std::shared_ptr<node_type> minimum() {
-        return root_;
+        if (!empty()) {
+            return root_->minimum();
+        }
+        return std::shared_ptr<node_type>();
     }
 
     std::shared_ptr<node_type> maximum() {
-        return root_;
+        if (!empty()) {
+            return root_->maximum();
+        }
+        return std::shared_ptr<node_type>();
     }
 
     template <
         class Func
         >
     void preorder_walk(const Func &func) {
-
+        if (!empty()) {
+            root_->preorder_walk(func);
+        }
     }
 
     template <
         class Func
         >
     void inorder_walk(const Func &func) {
-
+        if (!empty()) {
+            root_->inorder_walk_2(func);
+        }
     }
 
     template <
         class Func
         >
     void postorder_walk(const Func &func) {
-
+        if (!empty()) {
+            root_->postorder_walk(func);
+        }
     }
 
     template <
         class Func
         >
     void levelorder_walk(const Func &func) {
-
+        if (!empty()) {
+            root_->levelorder_walk(func);
+        }
     }
 
     template <
         class Func
         >
     void walk(const Func &func) {
-
+        inorder_walk(func);
     }
 
     bool empty() const {
@@ -142,7 +154,7 @@ public:
     }
 
     unsigned int count() {
-        return root_? 1U : 0U;
+        return root_? root_->count() : 0U;
     }
 
 private:

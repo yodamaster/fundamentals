@@ -17,6 +17,8 @@ set(CMAKE_CXX_FLAGS "-Wall -std=c++0x -g")
 
 set(EXAMPLES
   boost_range_algorithm
+  bloom_filter
+  lispic
   )
 
 foreach(example ${EXAMPLES})
