@@ -25,29 +25,9 @@ GlynView::GlynView(QWidget *parent)
     model->item(0)->setChild(2, new QStandardItem(tr("Oranges")));
     model->setItem(1, new QStandardItem(tr("Veg")));
 
-    // QAbstractProxyModel *proxyModel = new QSortFilterProxyModel(this);
     QAbstractProxyModel *proxyModel = new GlynModel(this);
     proxyModel->setSourceModel(model);
     setModel(proxyModel);
-
-    // QList<QStandardItem *> items;
-    // items.push_back(model->item(0));
-    // while (!items.empty())
-    // {
-    //     QStandardItem *item = items.front();
-    //     items.pop_front();
-    //
-    //     if (!item->hasChildren())
-    //     {
-    //         setRowHidden(item->row(), item->parent()->index(), true);
-    //     }
-    //
-    //     int rowCount = item->rowCount();
-    //     for (int i = 0; i < rowCount; ++i)
-    //     {
-    //         items.push_back(item->child(i));
-    //     }
-    // }
     setAnimated(true);
 }
 

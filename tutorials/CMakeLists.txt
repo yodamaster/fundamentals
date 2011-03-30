@@ -26,6 +26,8 @@ foreach(example ${EXAMPLES})
   target_link_libraries(tutorials-${example} ${Boost_REGEX_LIBRARY})
 endforeach(example)
 
+add_executable(tutorials-rbtree examples/test_red_black_tree.c examples/red_black_tree.c examples/stack.c examples/misc.c)
+
 enable_testing()
 set(TESTS
   list_tests

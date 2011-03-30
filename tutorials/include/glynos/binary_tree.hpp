@@ -168,8 +168,12 @@ public:
         return !static_cast<bool>(root_);
     }
 
-    unsigned int count() {
+    unsigned int count() const {
         return root_? root_->count() : 0U;
+    }
+
+    unsigned int height() const {
+        return root_? root_->height() : 0U;
     }
 
 private:
