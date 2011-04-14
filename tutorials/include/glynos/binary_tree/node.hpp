@@ -18,53 +18,10 @@ namespace glynos {
 template <
     class Key,
     class Value,
-    class Compare,
-    class Node
-    >
-struct bt_node_data {
-
-    std::shared_ptr<Node> parent, left, right;
-    const Compare &compare;
-    std::shared_ptr<const Key> key;
-    std::shared_ptr<Value> value;
-
-};
-
-template <
-    class Key,
-    class Value,
-    class Compare,
-    class Node
-    >
-struct rb_node_data : public bt_node_data<Key, Value, Compare, Node> {
-
-    enum Color {
-        Red, Black
-    };
-
-    Color color;
-};
-
-template <
-    class Key,
-    class Value,
-    class Compare,
-    class Node
-    >
-struct treap_node_data : public bt_node_data<Key, Value, Compare, Node> {
-    int priority;
-};
-
-
-template <
-    class Key,
-    class Value,
-    class Compare,
-    class Data = rb_node_data<Key, Value, Compare>
+    class Compare
     >
 class binary_tree_node
-    : public std::enable_shared_from_this<binary_tree_node<Key, Value, Compare> >,
-      public Data<Key, Value, Compare> {
+    : public std::enable_shared_from_this<binary_tree_node<Key, Value, Compare> > {
 
 public:
 
@@ -79,7 +36,7 @@ public:
         queue<std::shared_ptr<binary_tree_node> > nodes;
         nodes.push(other.shared_from_this());
         while (!nodes.empty()) {
-            std::shared_ptr<binary_tree_node> node = nodes.front();
+            std::shared_ptr<binary_tree_node> node = nodes.head();
             nodes.pop();
 
             // ...
@@ -250,7 +207,7 @@ public:
         queue<std::shared_ptr<binary_tree_node> > nodes;
         nodes.push(this->shared_from_this());
         while (!nodes.empty()) {
-            std::shared_ptr<binary_tree_node> node = nodes.front();
+            std::shared_ptr<binary_tree_node> node = nodes.head();
             nodes.pop();
 
             func(*node->key, *node->value);
@@ -268,7 +225,7 @@ public:
         queue<std::shared_ptr<const binary_tree_node> > nodes;
         nodes.push(this->shared_from_this());
         while (!nodes.empty()) {
-            std::shared_ptr<const binary_tree_node> node = nodes.front();
+            std::shared_ptr<const binary_tree_node> node = nodes.head();
             nodes.pop();
             ++count;
             if (node->left) {
@@ -285,13 +242,12 @@ public:
         return std::max((left? left->height() : 0U),
                         (right? right->height() : 0U)) + 1;
     }
-//
-//     std::shared_ptr<binary_tree_node> parent, left, right;
-//     const Compare &compare;
-//     std::shared_ptr<const Key> key;
-//     std::shared_ptr<Value> value;
-//     Color color;
-//
+
+    std::shared_ptr<binary_tree_node> parent, left, right;
+    const Compare &compare;
+    std::shared_ptr<const Key> key;
+    std::shared_ptr<Value> value;
+
 };
 } // namespace glynos
 

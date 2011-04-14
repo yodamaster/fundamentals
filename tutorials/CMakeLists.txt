@@ -37,6 +37,7 @@ set(TESTS
   hash_table_tests
   red_black_tree_tests
   concurrent_queue_tests
+  concurrent_stack_tests
   )
 
 foreach(test ${TESTS})

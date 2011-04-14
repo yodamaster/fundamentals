@@ -4,6 +4,9 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
+// p 160, C++ concurrency in action
+
+
 #ifndef __GLYNOS_CONCURRENT_LOOKUP_TABLE_INC__
 # define __GLYNOS_CONCURRENT_LOOKUP_TABLE_INC__
 

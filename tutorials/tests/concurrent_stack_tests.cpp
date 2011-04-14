@@ -4,26 +4,27 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#define BOOST_TEST_MODULE Concurrent queue tests
+#define BOOST_TEST_MODULE Concurrent stack tests
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
-#include <glynos/concurrent/queue.hpp>
+#include <glynos/concurrent/stack.hpp>
 
 
-using glynos::concurrent::queue;
-using glynos::concurrent::empty_queue;
+using glynos::concurrent::stack;
+using glynos::concurrent::empty_stack;
 
 
 BOOST_AUTO_TEST_CASE(test_constructor) {
-    queue<int> instance;
+    stack<int> instance;
     BOOST_CHECK_EQUAL(instance.count(), 0UL);
     BOOST_CHECK(instance.empty());
 }
 
 BOOST_AUTO_TEST_CASE(test_push_pop) {
-    queue<int> instance;
+    stack<int> instance;
     instance.push(10);
+    BOOST_CHECK(!instance.empty());
     BOOST_CHECK_EQUAL(instance.count(), 1UL);
     std::shared_ptr<int> result = instance.pop();
     BOOST_CHECK_EQUAL(*result, 10);
@@ -31,18 +32,18 @@ BOOST_AUTO_TEST_CASE(test_push_pop) {
 }
 
 BOOST_AUTO_TEST_CASE(test_push_2_pop) {
-    queue<int> instance;
+    stack<int> instance;
     instance.push(10);
     instance.push(20);
     BOOST_CHECK_EQUAL(instance.count(), 2UL);
     std::shared_ptr<int> result = instance.pop();
-    BOOST_CHECK_EQUAL(*result, 10);
+    BOOST_CHECK_EQUAL(*result, 20);
     BOOST_CHECK_EQUAL(instance.count(), 1UL);
     result = instance.pop();
-    BOOST_CHECK_EQUAL(*result, 20);
+    BOOST_CHECK_EQUAL(*result, 10);
 }
 
-BOOST_AUTO_TEST_CASE(test_pop_empty_queue) {
-    queue<int> instance;
-    BOOST_CHECK_THROW(instance.pop(), empty_queue);
+BOOST_AUTO_TEST_CASE(test_pop_empty_stack) {
+    stack<int> instance;
+    BOOST_CHECK_THROW(instance.pop(), empty_stack);
 }

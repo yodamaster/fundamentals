@@ -193,7 +193,7 @@ void TreeInsertHelp(rb_red_blk_tree* tree, rb_red_blk_node* z) {
        (1 == tree->Compare(y->key,z->key))) { /* y.key > z.key */
     y->left=z;
   } else {
-o    y->right=z;
+    y->right=z;
   }
 
 #ifdef DEBUG_ASSERT

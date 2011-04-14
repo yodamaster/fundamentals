@@ -23,7 +23,7 @@ public:
         queue_.add_tail(value);
     }
 
-    const T &front() const {
+    const T &head() const {
         assert(!empty());
         return *queue_.head()->value.get();
     }

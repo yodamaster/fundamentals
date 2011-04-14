@@ -4,7 +4,6 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-
 #define BOOST_TEST_MODULE Queue tests
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
@@ -25,7 +24,7 @@ BOOST_AUTO_TEST_CASE(test_push_pop) {
     queue<int> instance;
     instance.push(10);
     BOOST_CHECK_EQUAL(instance.count(), 1UL);
-    BOOST_CHECK_EQUAL(instance.front(), 10);
+    BOOST_CHECK_EQUAL(instance.head(), 10);
     instance.pop();
     BOOST_CHECK(instance.empty());
 }
@@ -35,10 +34,10 @@ BOOST_AUTO_TEST_CASE(test_push_2_pop) {
     instance.push(10);
     instance.push(20);
     BOOST_CHECK_EQUAL(instance.count(), 2UL);
-    BOOST_CHECK_EQUAL(instance.front(), 10);
+    BOOST_CHECK_EQUAL(instance.head(), 10);
     instance.pop();
     BOOST_CHECK_EQUAL(instance.count(), 1UL);
-    BOOST_CHECK_EQUAL(instance.front(), 20);
+    BOOST_CHECK_EQUAL(instance.head(), 20);
 }
 
 BOOST_AUTO_TEST_CASE(test_pop_empty_queue) {

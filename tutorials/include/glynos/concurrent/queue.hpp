@@ -6,6 +6,8 @@
 
 #include <memory>
 #include <thread>
+#include <exception>
+#include <glynos/queue.hpp>
 
 
 #ifndef __GLYNOS_CONCURRENT_QUEUE_INC__
@@ -14,31 +16,21 @@
 
 namespace glynos {
 namespace concurrent {
+class empty_queue : public std::runtime_error {
+public:
+
+    empty_queue() : std::runtime_error("Queue is empty.") {
+
+    }
+
+};
+
+
 template <
     class T
     >
 class queue {
 public:
-
-    typedef T value_type;
-
-    struct node_type {
-
-        node_type(const node_type &) = delete;
-        node_type &operator = (const node_type &) = delete;
-
-        node_type(const value_type &value)
-            : value(new value_type(value)) {
-
-        }
-
-        ~node_type() {
-
-        }
-
-        std::unique_ptr<node_type> next;
-        std::shared_ptr<T> value;
-    };
 
     queue() {
 
@@ -51,36 +43,36 @@ public:
 
     }
 
-    std::unique_ptr<value_type> pop() {
-        std::lock_guard<std::mutex> lock(head_monitor_);
-        std::unique_ptr<value_type> node(std::move(head_));
-        head_ = std::move(head_->next);
-        return node;
+    void push(const T &value) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        queue_.push(value);
     }
 
-    void push(const T &value) {
-        std::unique_ptr<node_type> new_node(new node_type(value));
-        {
-            std::lock_guard<std::mutex> lock(tail_monitor_);
-            node_type *new_tail = new_node.get();
-            tail_->next = std::move(new_node);
-            tail_ = new_tail;
+    std::shared_ptr<T> pop() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (queue_.empty()) {
+            throw empty_queue();
         }
-        has_tail_.notify_one();
+
+        std::shared_ptr<T> result(new T(queue_.head()));
+        queue_.pop();
+        return result;
+    }
+
+    unsigned int count() const {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return queue_.count();
     }
 
     bool empty() const {
-        std::lock_guard<std::mutex> lock(head_monitor_);
-        return !static_cast<bool>(head_);
+        std::lock_guard<std::mutex> lock(mutex_);
+        return queue_.empty();
     }
 
 private:
 
-    mutable std::mutex head_monitor_;
-    std::unique_ptr<node_type> head_;
-    mutable std::mutex tail_monitor_;
-    node_type *tail_;
-    std::condition_variable has_tail_;
+    glynos::queue<T> queue_;
+    mutable std::mutex mutex_;
 
 };
 } // namespace concurrent
