@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/slider_example.dir/main.cpp.o CMakeFiles/slider_example.dir/CustomSlider.cpp.o CMakeFiles/slider_example.dir/moc_CustomSlider.cxx.o  -o slider_example -rdynamic /opt/qt/lib/libQtCore.so /opt/qt/lib/libQtGui.so /opt/qt/lib/libQtSvg.so -Wl,-rpath,/opt/qt/lib 

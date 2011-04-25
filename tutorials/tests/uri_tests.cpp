@@ -12,7 +12,7 @@
 #include <boost/mpl/list.hpp>
 #include <boost/range/algorithm/equal.hpp>
 
-using namespace glynos::uri;
+using boost::network::uri;
 
 // typedef boost::mpl::list<
 //     tags::default_string

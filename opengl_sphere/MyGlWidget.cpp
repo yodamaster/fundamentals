@@ -57,31 +57,6 @@ void MyGlWidget::resizeGL(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void MyGlWidget::paintEvent(QPaintEvent *event)
-{
-    QGLWidget::paintEvent(event);
-}
-
-void MyGlWidget::mousePressEvent(QMouseEvent *event)
-{
-    QGLWidget::mousePressEvent(event);
-}
-
-void MyGlWidget::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    QGLWidget::mouseDoubleClickEvent(event);
-}
-
-void MyGlWidget::mouseMoveEvent(QMouseEvent *event)
-{
-    QGLWidget::mouseMoveEvent(event);
-}
-
-void MyGlWidget::wheelEvent(QWheelEvent *event)
-{
-    QGLWidget::wheelEvent(event);
-}
-
 void MyGlWidget::keyPressEvent(QKeyEvent *event)
 {
     switch(event->key()) {
@@ -92,9 +67,4 @@ void MyGlWidget::keyPressEvent(QKeyEvent *event)
         event->ignore();
         break;
     }
-}
-
-void MyGlWidget::keyReleaseEvent(QKeyEvent *event)
-{
-    QGLWidget::keyReleaseEvent(event);
 }

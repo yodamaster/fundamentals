@@ -1,31 +1,39 @@
-//            Copyright (c) Glyn Matthews 2010.
+//            Copyright (c) Glyn Matthews 2011.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __GLYNOS_URI_INC__
-# define __GLYNOS_URI_INC__
+#ifndef __BOOST_NETWORK_URI_INC__
+# define __BOOST_NETWORK_URI_INC__
 
 
 # include <algorithm>
-# include <string>
+# include <pair>
 
 
-namespace glynos {
-class uri {
+namespace boost {
+namespace network {
+namespace uri {
+template <
+    class Tag
+    >
+class basic_uri {
 
 public:
+
+    typedef typename string<Tag>::type string_type;
+    typedef typename string_type::const_iterator const_iterator_type;
+    typedef std::pair<const_iterator_type, const_iterator_type> const_range_type;
 
     uri() : is_valid_(false) {
 
     }
 
-    explicit uri(const std::string &uri)
+    explicit uri(const string_type &uri)
         : uri_(uri), is_valid_(false) {
         parse();
     }
-    std::string::const_iterator user_info_, host_, port_, path_, query_, fragment_;
 
     uri(const uri &other)
         : uri_(other.uri_),
@@ -59,39 +67,78 @@ public:
         std::swap(is_valid_, other.is_valid_);
     }
 
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> scheme() const {
+    const_range_type scheme_range() const {
         return std::make_pair(uri_.begin(), user_info);
     }
 
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> user_info() const {
-        return std::make_pair(user_info_, host_));
+    const_range_type user_info_range() const {
+        return std::make_pair(user_info_, host_);
     }
 
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> host() const {
+    const_range_type host_range() const {
         return std::make_pair(host_, port_);
     }
 
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> port() const {
+    const_range_type port_range() const {
         return std::make_pair(port_, path_);
     }
 
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> path() const {
+    const_range_type path_range() const {
         return std::make_pair(path_, query_);
     }
 
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> query() const {
+    const_range_type query_range() const {
         return std::make_pair(query_, fragment_);
     }
 
-    std::pair<std::string::const_iterator,
-              std::string::const_iterator> fragment() const {
+    const_range_type fragment_range() const {
         return std::make_pair(fragment_, uri_.end());
+    }
+
+    string_type scheme() const {
+        const_iterator_type begin, end;
+        boost::tie(begin, end) = scheme_range();
+        return string_type(begin, end);
+    }
+
+    string_type user_info() const {
+        const_iterator_type begin, end;
+        boost::tie(begin, end) = user_info_range();
+        return string_type(begin, end);
+    }
+
+    string_type host() const {
+        const_iterator_type begin, end;
+        boost::tie(begin, end) = host_range();
+        return string_type(begin, end);
+    }
+
+    string_type port() const {
+        const_iterator_type begin, end;
+        boost::tie(begin, end) = port_range();
+        return string_type(begin, end);
+    }
+
+    string_type path() const {
+        const_iterator_type begin, end;
+        boost::tie(begin, end) = path_range();
+        return string_type(begin, end);
+    }
+
+    string_type query() const {
+        const_iterator_type begin, end;
+        boost::tie(begin, end) = query_range();
+        return string_type(begin, end);
+    }
+
+    string_type fragment() const {
+        const_iterator_type begin, end;
+        boost::tie(begin, end) = fragment_range();
+        return string_type(begin, end);
+    }
+
+    string_type to_string() const {
+        return uri_;
     }
 
     bool is_valid() const {
@@ -100,13 +147,24 @@ public:
 
 private:
 
-    std::string uri_;
-    std::string::const_iterator user_info_, host_, port_, path_, query_, fragment_;
+    void parse();
+
+    string_type uri_;
+    string_type::const_iterator user_info_, host_, port_, path_, query_, fragment_;
     bool is_valid_;
 
 };
 } // namespace uri
-} // namespace glynos
+} // namespace network
+} // namespace boost
 
 
-#endif // __GLYNOS_URI_INC__
+template <
+    class Tag
+    >
+void basic_uri<Tag>::parse() {
+
+}
+
+
+#endif // __BOOST_NETWORK_URI_INC__
