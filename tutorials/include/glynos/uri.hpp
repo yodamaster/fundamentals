@@ -159,12 +159,7 @@ private:
 } // namespace boost
 
 
-template <
-    class Tag
-    >
-void basic_uri<Tag>::parse() {
-
-}
+# include "details/uri.hpp"
 
 
 #endif // __BOOST_NETWORK_URI_INC__
