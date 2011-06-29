@@ -12,6 +12,10 @@
 
 
 namespace glynos {
+//
+// \class stack glynos.stack.hpp
+// \brief A simple stack implementation.
+//
 template <
     class T
     >
@@ -24,8 +28,7 @@ public:
     }
 
     const T &top() const {
-        assert(!empty());
-        return *stack_.tail()->value.get();
+        return stack_.tail();
     }
 
     void pop() {

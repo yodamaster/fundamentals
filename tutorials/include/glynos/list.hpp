@@ -14,9 +14,9 @@
 
 
 namespace glynos {
-/**
- *
- */
+//
+// \class list
+//
 template <
     class T
     >
@@ -26,10 +26,15 @@ public:
 
     typedef T value_type;
 
-    struct node_type {
+    //
+    // \class node_type
+    //
+    class node_type {
 
         node_type(const node_type &) = delete;
         node_type &operator = (const node_type &) = delete;
+
+    public:
 
         node_type(const value_type &value)
             : value(new value_type(value)) {
@@ -45,16 +50,25 @@ public:
 
     };
 
+    //
+    // \brief Constructor.
+    //
     list() {
 
     }
 
+    //
+    // \brief Initializer list constructor.
+    //
     list(std::initializer_list<T> items) {
         using std::placeholders::_1;
         std::for_each(items.begin(), items.end(),
                       std::bind(&list<T>::add_tail, this, _1));
     }
 
+    //
+    // \brief Copy constructor.
+    //
     list(const list &other) {
         if (!other.empty()) {
             head_.reset(new node_type(*other.head_->value));
@@ -71,6 +85,9 @@ public:
         }
     }
 
+    //
+    // \brief Move constructor.
+    //
     list(list &&other)
         : head_(other.head_),
           tail_(other.tail_) {
@@ -78,25 +95,42 @@ public:
         other.tail_.reset();
     }
 
+    //
+    // \brief Assignment operator.
+    //
     list &operator = (const list &other) {
         list(other).swap(*this);
         return *this;
     }
 
+    //
+    // \brief Move assignment operator.
+    //
     list &operator = (list &&other) {
         list(std::move(other)).swap(*this);
         return *this;
     }
 
+    //
+    // \brief Destructor.
+    //
     ~list() {
 
     }
 
+    //
+    // \brief Swaps this list with another.
+    // \param other Another list.
+    //
     void swap(list &other) {
         std::swap(head_, other.head_);
         std::swap(tail_, other.tail_);
     }
 
+    //
+    // \brief Adds a value to the head of the list.
+    // \param value The value to add at the head of the list.
+    //
     void add_head(const T &value) {
         std::shared_ptr<node_type> node(new node_type(value));
         if (head_) {
@@ -109,6 +143,10 @@ public:
         }
     }
 
+    //
+    // \brief Removes a value from the head of the list.
+    // Does nothing if the list is empty.
+    //
     void remove_head() {
         if (head_) {
             std::shared_ptr<node_type> new_head = head_->next;
@@ -122,14 +160,46 @@ public:
         }
     }
 
-    std::shared_ptr<node_type> head() {
+    //
+    // \brief Returns a pointer to the head of the list.
+    // Returns a null pointer if empty.
+    //
+    std::shared_ptr<node_type> head_node() {
         return head_;
     }
 
-    std::shared_ptr<const node_type> head() const {
+    //
+    // \brief Returns a const pointer to the head of the list.
+    // Returns a null pointer if empty.
+    //
+    std::shared_ptr<const node_type> head_node() const {
         return head_;
     }
 
+    //
+    // \brief Returns a reference to the head value.
+    // \return The head value.
+    // \pre !list.empty()
+    //
+    T &head() {
+        assert(!empty());
+        return *head_->value;
+    }
+
+    //
+    // \brief Returns a const reference to the head value.
+    // \return The head value.
+    // \pre !list.empty()
+    //
+    const T &head() const {
+        assert(!empty());
+        return *head_->value;
+    }
+
+    //
+    // \brief Adds a value to the tail of the list.
+    // \param value A value to add to the tail.
+    //
     void add_tail(const T &value) {
         std::shared_ptr<node_type> node(new node_type(value));
         if (tail_) {
@@ -142,6 +212,10 @@ public:
         }
     }
 
+    //
+    // \brief Removes a value from the tail of the list.
+    // Does nothing of the list is empty.
+    //
     void remove_tail() {
         if (tail_) {
             std::shared_ptr<node_type> new_tail = tail_->prev;
@@ -155,14 +229,46 @@ public:
         }
     }
 
-    std::shared_ptr<node_type> tail() {
+    //
+    // \brief Returns a pointer to the tail node.
+    // \return The tail node or a null pointer of the list is empty.
+    //
+    std::shared_ptr<node_type> tail_node() {
         return tail_;
     }
 
-    std::shared_ptr<const node_type> tail() const {
+    //
+    // \brief Returns a pointer to the tail node.
+    // \return The tail node or a null pointer of the list is empty.
+    //
+    std::shared_ptr<const node_type> tail_node() const {
         return tail_;
     }
 
+    //
+    // \brief Returns a reference to the value at the tail of the
+    //        list.
+    // \return The tail of the list.
+    //
+    T &tail() {
+        assert(!empty());
+        return *tail_->value;
+    }
+
+    //
+    // \brief Returns a reference to the value at the tail of the
+    //        list.
+    // \return The tail of the list.
+    //
+    const T &tail() const {
+        assert(!empty());
+        return *tail_->value;
+    }
+
+    //
+    // \brief Inserts a value after the node, if it exists in the
+    //        list.
+    //
     void insert_after(std::shared_ptr<node_type> node, const T &value) {
         std::shared_ptr<node_type> new_node(new node_type(value));
         if (node->next) {
@@ -174,6 +280,9 @@ public:
         new_node->prev = node;
     }
 
+    //
+    // \brief Removes the node from the list.
+    // \return A
     std::shared_ptr<node_type> remove(std::shared_ptr<node_type> node) {
         std::shared_ptr<node_type> next = node->next;
         if (node->prev) {
@@ -191,6 +300,10 @@ public:
         return next;
     }
 
+    //
+    // \brief Walks through every element in the list and applies the
+    //        function object.
+    //
     template <
         class Func
         >
@@ -200,6 +313,10 @@ public:
         }
     }
 
+    //
+    // \brief Walks backwards through every element in the list and
+    //        applies the function object.
+    //
     template <
         class Func
         >
@@ -209,6 +326,10 @@ public:
         }
     }
 
+    //
+    // \brief Sorts the list.
+    //
+    // This implementation uses merge sort and is O(N ln(N)).
     template <
         class Func
         >
@@ -236,6 +357,10 @@ public:
         return merge(left.sort(func), right.sort(func), func);
     }
 
+    //
+    // \brief Finds the first element in the list such that
+    //        func(element) returns \c true.
+    //
     template <
         class Func
         >
@@ -250,10 +375,16 @@ public:
         return std::shared_ptr<const node_type>();
     }
 
+    //
+    // \brief
+    //
     bool empty() const {
         return !head_;
     }
 
+    //
+    // Returns the number of elements in the list.
+    //
     unsigned int count() const {
         unsigned int count = 0;
         for (std::shared_ptr<node_type> node = head_;
@@ -272,7 +403,7 @@ private:
     list merge(const list &left, const list &right, const Func &func) const {
         list result;
         std::shared_ptr<const node_type>
-            left_node(left.head()), right_node(right.head());
+            left_node(left.head_node()), right_node(right.head_node());
         while (left_node || right_node) {
             if (left_node && right_node) {
                 if (func(*left_node->value, *right_node->value)) {
@@ -301,6 +432,9 @@ private:
 };
 
 
+//
+// \brief Equality operator.
+//
 template <
     class T
     >
@@ -310,7 +444,7 @@ bool operator == (const list<T> &l1, const list<T> &l2) {
     }
 
     std::shared_ptr<const typename list<T>::node_type> n1, n2;
-    for (n1 = l1.head(), n2 = l2.head(); n1; n1 = n1->next, n2 = n2->next) {
+    for (n1 = l1.head_node(), n2 = l2.head_node(); n1; n1 = n1->next, n2 = n2->next) {
         if (*n1->value != *n2->value) {
             return false;
         }
@@ -318,6 +452,9 @@ bool operator == (const list<T> &l1, const list<T> &l2) {
     return true;
 }
 
+//
+// \brief Inequality operator.
+//
 template <
     class T
     >

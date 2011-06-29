@@ -76,7 +76,7 @@ public:
     bool insert(const Key &key, const Value &value) {
         unsigned int hash = hash_fun_(key);
         unsigned int index = hash_to_index(hash);
-        for (auto node = table_[index].head(); node; node = node->next) {
+        for (auto node = table_[index].head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {
                 return false;
@@ -91,7 +91,7 @@ public:
         unsigned int hash = hash_fun_(key);
         unsigned int index = hash_to_index(hash);
         std::shared_ptr<const Value> result;
-        for (auto node = table_[index].head(); node; node = node->next) {
+        for (auto node = table_[index].head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {
                 result = (*node->value)->value;
@@ -104,7 +104,7 @@ public:
     void remove(const Key &key) {
         unsigned int hash = hash_fun_(key);
         unsigned int index = hash_to_index(hash);
-        for (auto node = table_[index].head(); node; node = node->next) {
+        for (auto node = table_[index].head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {
                 table_[index].remove(node);
@@ -118,7 +118,7 @@ public:
         >
     void walk(const Func &func) {
         for (unsigned int i = 0; i < length_; ++i) {
-            for (auto node = table_[i].head(); node; node = node->next) {
+            for (auto node = table_[i].head_node(); node; node = node->next) {
                 func(*(*node->value)->key, *(*node->value)->value);
             }
         }

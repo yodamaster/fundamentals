@@ -12,6 +12,10 @@
 
 
 namespace glynos {
+//
+// \class queue glynos/queue.hpp
+// \brief A simple queue implementation.
+//
 template <
     class T
     >
@@ -24,8 +28,7 @@ public:
     }
 
     const T &head() const {
-        assert(!empty());
-        return *queue_.head()->value.get();
+        return queue_.head();
     }
 
     void pop() {
