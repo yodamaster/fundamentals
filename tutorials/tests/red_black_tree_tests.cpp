@@ -4,7 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#define BOOST_TEST_MODULE Red_Black tree test
+#define BOOST_TEST_MODULE Red black tree test
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
