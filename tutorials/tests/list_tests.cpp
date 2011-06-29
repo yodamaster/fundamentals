@@ -265,3 +265,15 @@ BOOST_AUTO_TEST_CASE(sort_reverse_elements_test) {
     BOOST_CHECK_EQUAL(*instance.head()->next->next->next->next->value, 14);
     BOOST_CHECK_EQUAL(*instance.tail()->value, 109);
 }
+
+BOOST_AUTO_TEST_CASE(initializer_list_test) {
+    list<int> instance{
+        -2, 9, 10, 11, 14, 109 };
+    BOOST_CHECK_EQUAL(instance.count(), 6U);
+    BOOST_CHECK_EQUAL(*instance.head()->value, -2);
+    BOOST_CHECK_EQUAL(*instance.head()->next->value, 9);
+    BOOST_CHECK_EQUAL(*instance.head()->next->next->value, 10);
+    BOOST_CHECK_EQUAL(*instance.head()->next->next->next->value, 11);
+    BOOST_CHECK_EQUAL(*instance.head()->next->next->next->next->value, 14);
+    BOOST_CHECK_EQUAL(*instance.tail()->value, 109);
+}

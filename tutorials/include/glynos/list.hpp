@@ -10,6 +10,7 @@
 
 # include <algorithm>
 # include <memory>
+# include <functional>
 
 
 namespace glynos {
@@ -46,6 +47,12 @@ public:
 
     list() {
 
+    }
+
+    list(std::initializer_list<T> items) {
+        using std::placeholders::_1;
+        std::for_each(items.begin(), items.end(),
+                      std::bind(&list<T>::add_tail, this, _1));
     }
 
     list(const list &other) {
