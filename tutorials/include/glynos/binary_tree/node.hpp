@@ -12,6 +12,7 @@
 # include <memory>
 # include <glynos/queue.hpp>
 # include <glynos/stack.hpp>
+# include <boost/optional.hpp>
 
 
 namespace glynos {
@@ -33,24 +34,22 @@ public:
     }
 
     binary_tree_node(const binary_tree_node &other) {
-        queue<std::shared_ptr<binary_tree_node> > nodes;
-        nodes.push(other.shared_from_this());
-        while (!nodes.empty()) {
-            std::shared_ptr<binary_tree_node> node = nodes.head();
-            nodes.pop();
-
-            // ...
-            // insert?
-
-            if (node->left) {
-                nodes.push(node->left);
-            }
-            if (node->right) {
-                nodes.push(node->right);
-            }
-        }
-        return;
-
+        // queue<std::shared_ptr<binary_tree_node> > nodes;
+        // nodes.push(other.shared_from_this());
+        // while (!nodes.empty()) {
+        //     std::shared_ptr<binary_tree_node> node = nodes.head();
+        //     nodes.pop();
+        //
+        //     // ...
+        //     // insert?
+        //
+        //     if (node->left) {
+        //         nodes.push(node->left);
+        //     }
+        //     if (node->right) {
+        //         nodes.push(node->right);
+        //     }
+        // }
     }
 
     binary_tree_node &operator = (const binary_tree_node &other) {

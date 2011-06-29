@@ -51,7 +51,7 @@ BOOST_AUTO_TEST_CASE(insert_3_test) {
     BOOST_CHECK(instance.insert(4, 8));
     BOOST_CHECK(instance.insert(2, 4));
     BOOST_CHECK_EQUAL(instance.count(), 3U);
-    BOOST_CHECK_EQUAL(instance.height(), 3U);
+    BOOST_CHECK_EQUAL(instance.height(), 2U);
     BOOST_CHECK_EQUAL(*instance.minimum()->key, 1);
     BOOST_CHECK_EQUAL(*instance.minimum()->value, 2);
     BOOST_CHECK_EQUAL(*instance.maximum()->key, 4);
@@ -71,7 +71,7 @@ BOOST_AUTO_TEST_CASE(insert_10_test) {
     BOOST_CHECK(instance.insert(7, 14));
     BOOST_CHECK(instance.insert(4, 8));
     BOOST_CHECK_EQUAL(instance.count(), 10U);
-    BOOST_CHECK_EQUAL(instance.height(), 5U);
+    BOOST_CHECK_EQUAL(instance.height(), 3U);
     BOOST_CHECK_EQUAL(*instance.minimum()->key, 0);
     BOOST_CHECK_EQUAL(*instance.minimum()->value, 0);
     BOOST_CHECK_EQUAL(*instance.maximum()->key, 9);
@@ -91,7 +91,7 @@ BOOST_AUTO_TEST_CASE(insert_10_in_order_test) {
     BOOST_CHECK(instance.insert(8, 16));
     BOOST_CHECK(instance.insert(9, 18));
     BOOST_CHECK_EQUAL(instance.count(), 10U);
-    BOOST_CHECK_EQUAL(instance.height(), 10U);
+    BOOST_CHECK_EQUAL(instance.height(), 4U);
     BOOST_CHECK_EQUAL(*instance.minimum()->key, 0);
     BOOST_CHECK_EQUAL(*instance.minimum()->value, 0);
     BOOST_CHECK_EQUAL(*instance.maximum()->key, 9);
