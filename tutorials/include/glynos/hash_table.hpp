@@ -10,6 +10,7 @@
 
 # include "glynos/list.hpp"
 # include <memory>
+# include <functional>
 # include <cstddef>
 # include <cstring>
 
@@ -18,7 +19,7 @@ namespace glynos {
 template <
     class Key,
     class Value,
-    class Hash
+    typename Hash = std::hash<Key>
     >
 class hash_table {
 
@@ -39,19 +40,23 @@ class hash_table {
 
     };
 
+    struct bucket_type {
+        list<std::shared_ptr<entry> > data;
+    };
+
 public:
 
     explicit hash_table(unsigned int min_size = 100,
                         const Hash &hash = Hash())
         : length_(min_size),
-          table_(new list<std::shared_ptr<entry> >[length_]),
+          table_(new bucket_type[length_]),
           hash_fun_(hash) {
 
     }
 
     hash_table(const hash_table &other)
         : length_(other.length_),
-          table_(new list<std::shared_ptr<entry> >[length_]),
+          table_(new bucket_type[length_]),
           hash_fun_(other.hash_fun_) {
         for (unsigned int i = 0; i < length_; ++i) {
             table_[i] = other.table_[i];
@@ -76,14 +81,14 @@ public:
     bool insert(const Key &key, const Value &value) {
         unsigned int hash = hash_fun_(key);
         unsigned int index = hash_to_index(hash);
-        for (auto node = table_[index].head_node(); node; node = node->next) {
+        for (auto node = table_[index].data.head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {
                 return false;
             }
         }
         std::shared_ptr<entry> e(new entry(key, value, hash));
-        table_[index].add_tail(e);
+        table_[index].data.add_tail(e);
         return true;
     }
 
@@ -91,7 +96,7 @@ public:
         unsigned int hash = hash_fun_(key);
         unsigned int index = hash_to_index(hash);
         std::shared_ptr<const Value> result;
-        for (auto node = table_[index].head_node(); node; node = node->next) {
+        for (auto node = table_[index].data.head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {
                 result = (*node->value)->value;
@@ -104,10 +109,10 @@ public:
     void remove(const Key &key) {
         unsigned int hash = hash_fun_(key);
         unsigned int index = hash_to_index(hash);
-        for (auto node = table_[index].head_node(); node; node = node->next) {
+        for (auto node = table_[index].data.head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {
-                table_[index].remove(node);
+                table_[index].data.remove(node);
                 return;
             }
         }
@@ -118,7 +123,7 @@ public:
         >
     void walk(const Func &func) {
         for (unsigned int i = 0; i < length_; ++i) {
-            for (auto node = table_[i].head_node(); node; node = node->next) {
+            for (auto node = table_[i].data.head_node(); node; node = node->next) {
                 func(*(*node->value)->key, *(*node->value)->value);
             }
         }
@@ -127,7 +132,7 @@ public:
     unsigned int count() const {
         unsigned int count = 0;
         for (unsigned int i = 0; i < length_; ++i) {
-            count += table_[i].count();
+            count += table_[i].data.count();
         }
         return count;
     }
@@ -143,7 +148,7 @@ private:
     }
 
     unsigned int length_;
-    list<std::shared_ptr<entry> > *table_;
+    bucket_type *table_;
     Hash hash_fun_;
 
 };

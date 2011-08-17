@@ -4,15 +4,15 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#define BOOST_TEST_MODULE Concurrent stack tests
+#define BOOST_TEST_MODULE Thread-safe stack tests
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
-#include <glynos/concurrent/stack.hpp>
+#include <glynos/threadsafe/stack.hpp>
 
 
-using glynos::concurrent::stack;
-using glynos::concurrent::empty_stack;
+using glynos::threadsafe::stack;
+using glynos::threadsafe::empty_stack;
 
 
 BOOST_AUTO_TEST_CASE(test_constructor) {

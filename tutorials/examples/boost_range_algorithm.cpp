@@ -1,4 +1,3 @@
-
 //             Copyright Glyn Matthews 2010, 2011.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -10,7 +9,6 @@
 #include <boost/range/counting_range.hpp>
 #include <boost/range/adaptors.hpp>
 #include <boost/spirit/home/phoenix.hpp>
-#include <boost/regex.hpp>
 #include <vector>
 #include <string>
 #include <list>
@@ -64,9 +62,9 @@ std::vector<int> create_vec_int_unsorted() {
 template <
     class Rng
     >
-struct in_t {
+struct is_member_of_t {
     const Rng &rng_;
-    explicit in_t(const Rng &rng) :rng_(rng) {}
+    explicit is_member_of_t(const Rng &rng) :rng_(rng) {}
     template <
         class T
         >
@@ -79,9 +77,9 @@ template <
     class Rng
     >
 inline
-in_t<Rng>
-in(const Rng &rng) {
-    return in_t<Rng>(rng);
+is_member_of_t<Rng>
+is_member_of(const Rng &rng) {
+    return is_member_of_t<Rng>(rng);
 }
 
 
@@ -229,17 +227,17 @@ main(int argc, char *argv[]) {
         std::vector<std::string> league_table(sandbox::create_vec_str());
         sandbox::print_range(std::make_pair(boost::begin(league_table),
                                             boost::begin(league_table) + 6)
-                             | filtered(sandbox::in(london_teams)),
+                             | filtered(sandbox::is_member_of(london_teams)),
                              "London teams in top 6");
 
         sandbox::print_range(std::make_pair(boost::begin(league_table),
                                             sandbox::midpoint(league_table))
-                             | filtered(sandbox::in(london_teams)),
+                             | filtered(sandbox::is_member_of(london_teams)),
                              "London teams in top half");
 
         sandbox::print_range(std::make_pair(sandbox::midpoint(league_table),
                                             boost::end(league_table))
-                             | filtered(sandbox::in(london_teams)),
+                             | filtered(sandbox::is_member_of(london_teams)),
                              "London teams in bottom half");
 
         std::string s("New path to helicon part 1.");

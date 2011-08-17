@@ -4,79 +4,79 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef __GLYNOS_CONCURRENT_STACK_INC__
-# define __GLYNOS_CONCURRENT_STACK_INC__
+#include <memory>
+#include <thread>
+#include <exception>
+#include <glynos/queue.hpp>
 
 
-# include <exception>
-# include <thread>
-# include <memory>
-# include <glynos/stack.hpp>
+#ifndef __GLYNOS_THREADSAFE_QUEUE_INC__
+# define __GLYNOS_THREADSAFE_QUEUE_INC__
 
 
 namespace glynos {
-namespace concurrent {
-class empty_stack : public std::runtime_error {
+namespace threadsafe {
+class empty_queue : public std::runtime_error {
 public:
 
-    empty_stack() : std::runtime_error("Stack is empty.") {
+    empty_queue() : std::runtime_error("Queue is empty.") {
 
     }
+
 };
 
 
 template <
     class T
     >
-class stack {
-
-    stack(const stack &other) = delete;
-    stack &operator = (const stack &other) = delete;
-
+class queue {
 public:
 
-    stack() {
+    queue() {
 
     }
 
-    ~stack() {
+    queue(const queue &) = delete;
+    queue &operator = (const queue &) = delete;
+
+    ~queue() {
 
     }
 
     void push(const T &value) {
         std::lock_guard<std::mutex> lock(mutex_);
-        stack_.push(value);
+        queue_.push(value);
     }
 
     std::shared_ptr<T> pop() {
         std::lock_guard<std::mutex> lock(mutex_);
-        if (stack_.empty()) {
-            throw empty_stack();
+        if (queue_.empty()) {
+            throw empty_queue();
         }
 
-        std::shared_ptr<T> result(new T(stack_.top()));
-        stack_.pop();
+        std::shared_ptr<T> result(new T(queue_.head()));
+        queue_.pop();
         return result;
     }
 
     unsigned int count() const {
         std::lock_guard<std::mutex> lock(mutex_);
-        return stack_.count();
+        return queue_.count();
     }
 
     bool empty() const {
         std::lock_guard<std::mutex> lock(mutex_);
-        return stack_.empty();
+        return queue_.empty();
     }
 
 private:
 
-    glynos::stack<T> stack_;
+    glynos::queue<T> queue_;
     mutable std::mutex mutex_;
 
 };
-} // namespace concurrent
+} // namespace threadsafe
 } // namespace glynos
 
 
-#endif // __GLYNOS_CONCURRENT_STACK_INC__
+#endif // __GLYNOS_THREADSAFE_QUEUE_INC__

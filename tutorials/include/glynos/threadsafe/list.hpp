@@ -3,19 +3,18 @@
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 
+// p164 C++ Concurrency in Action
 
-// p 160, C++ concurrency in action
 
-
-#ifndef __GLYNOS_CONCURRENT_LOOKUP_TABLE_INC__
-# define __GLYNOS_CONCURRENT_LOOKUP_TABLE_INC__
+#ifndef __GLYNOS_THREADSAFE_LIST_INC__
+# define __GLYNOS_THREADSAFE_LIST_INC__
 
 
 namespace glynos {
-namespace concurrent {
+namespace threadsafe {
 
-} // namespace concurrent
+} // namespace threadsafe
 } // namespace glynos
 
 
-#endif // __GLYNOS_CONCURRENT_LOOKUP_TABLE_INC__
+#endif // __GLYNOS_THREADSAFE_LIST_INC__

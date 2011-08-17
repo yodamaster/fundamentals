@@ -10,6 +10,7 @@
 #include <boost/test/unit_test.hpp>
 #include <glynos/binary_tree.hpp>
 #include <glynos/list.hpp>
+#include "list_io.hpp"
 #include <functional>
 #include <iostream>
 
@@ -20,17 +21,6 @@ using glynos::list;
 #include <boost/spirit/home/phoenix.hpp>
 using boost::phoenix::arg_names::arg1;
 using boost::phoenix::arg_names::arg2;
-
-template <
-    class T
-    >
-std::ostream &operator << (std::ostream &os, const glynos::list<T> &list) {
-    std::shared_ptr<const typename glynos::list<T>::node_type> node;
-    for (node = list.head(); node; node = node->next) {
-        os << *node->value << ", ";
-    }
-    return os;
-}
 
 
 BOOST_AUTO_TEST_CASE(constructor_test) {

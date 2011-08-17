@@ -31,8 +31,10 @@ public:
     //
     class node_type {
 
+# if !defined(BOOST_NO_DELETED_FUNCTIONS)
         node_type(const node_type &) = delete;
         node_type &operator = (const node_type &) = delete;
+# endif // !defined(BOOST_NO_DELETED_FUNCTIONS)
 
     public:
 
@@ -57,6 +59,7 @@ public:
 
     }
 
+# if !defined(BOOST_NO_INITIALIZER_LISTS)
     //
     // \brief Initializer list constructor.
     //
@@ -65,6 +68,7 @@ public:
         std::for_each(items.begin(), items.end(),
                       std::bind(&list<T>::add_tail, this, _1));
     }
+# endif // !defined(BOOST_NO_INITIALIZER_LISTS)
 
     //
     // \brief Copy constructor.
@@ -387,6 +391,7 @@ public:
     //
     unsigned int count() const {
         unsigned int count = 0;
+        // walk([&count](unsigned int &count) { ++count; });
         for (std::shared_ptr<node_type> node = head_;
              node;
              node = node->next) {
@@ -439,17 +444,15 @@ template <
     class T
     >
 bool operator == (const list<T> &l1, const list<T> &l2) {
-    if (l1.count() != l2.count()) {
-        return false;
-    }
-
-    std::shared_ptr<const typename list<T>::node_type> n1, n2;
-    for (n1 = l1.head_node(), n2 = l2.head_node(); n1; n1 = n1->next, n2 = n2->next) {
+    auto n1 = l1.head_node(), n2 = l2.head_node();
+    while (n1 && n2) {
         if (*n1->value != *n2->value) {
-            return false;
+            break;
         }
+        n1 = n1->next;
+        n2 = n2->next;
     }
-    return true;
+    return !n1 && !n2;
 }
 
 //

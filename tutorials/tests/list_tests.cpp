@@ -9,10 +9,15 @@
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include <glynos/list.hpp>
+#include "list_io.hpp"
 #include <functional>
 
 
 using glynos::list;
+
+#include <boost/spirit/home/phoenix.hpp>
+using boost::phoenix::arg_names::arg1;
+using boost::phoenix::arg_names::arg2;
 
 
 BOOST_AUTO_TEST_CASE(constructor_test) {
@@ -276,4 +281,32 @@ BOOST_AUTO_TEST_CASE(initializer_list_test) {
     BOOST_CHECK_EQUAL(*instance.head_node()->next->next->next->value, 11);
     BOOST_CHECK_EQUAL(*instance.head_node()->next->next->next->next->value, 14);
     BOOST_CHECK_EQUAL(*instance.tail_node()->value, 109);
+}
+
+BOOST_AUTO_TEST_CASE(equality_test_1) {
+    list<int> instance1{
+        -2, 9, 10, 11, 14, 109 };
+    list<int> instance2{
+        -2, 9, 10, 11, 14, 109 };
+    BOOST_CHECK(instance1 == instance2);
+}
+
+BOOST_AUTO_TEST_CASE(equality_test_2) {
+    list<int> instance1{ -2 };
+    list<int> instance2{ -2 };
+    BOOST_CHECK(instance1 == instance2);
+}
+
+BOOST_AUTO_TEST_CASE(equality_test_3) {
+    list<int> instance1;
+    list<int> instance2;
+    BOOST_CHECK(instance1 == instance2);
+}
+
+BOOST_AUTO_TEST_CASE(inequality_test) {
+    list<int> instance1{
+        -2, 9, 10, 11, 14, 109 };
+    list<int> instance2{
+        -2, 9, 10, 11, 14 };
+    BOOST_CHECK(instance1 != instance2);
 }

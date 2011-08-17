@@ -4,15 +4,15 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#define BOOST_TEST_MODULE Concurrent queue tests
+#define BOOST_TEST_MODULE Thread-safe queue tests
 #define BOOST_TEST_DYN_LINK
 #define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
-#include <glynos/concurrent/queue.hpp>
+#include <glynos/threadsafe/queue.hpp>
 
 
-using glynos::concurrent::queue;
-using glynos::concurrent::empty_queue;
+using glynos::threadsafe::queue;
+using glynos::threadsafe::empty_queue;
 
 
 BOOST_AUTO_TEST_CASE(test_constructor) {
