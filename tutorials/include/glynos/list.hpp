@@ -89,6 +89,7 @@ public:
         }
     }
 
+# if !defined(BOOST_NO_RVALUE_REFERENCES)
     //
     // \brief Move constructor.
     //
@@ -98,6 +99,7 @@ public:
         other.head_.reset();
         other.tail_.reset();
     }
+# endif // !defined(BOOST_NO_RVALUE_REFERENCES)
 
     //
     // \brief Assignment operator.
@@ -107,6 +109,7 @@ public:
         return *this;
     }
 
+# if !defined(BOOST_NO_RVALUE_REFERENCES)
     //
     // \brief Move assignment operator.
     //
@@ -114,6 +117,7 @@ public:
         list(std::move(other)).swap(*this);
         return *this;
     }
+# endif // !defined(BOOST_NO_RVALUE_REFERENCES)
 
     //
     // \brief Destructor.

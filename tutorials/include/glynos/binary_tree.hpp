@@ -38,20 +38,24 @@ public:
         }
     }
 
+# if !defined(BOOST_NO_RVALUE_REFERENCES)
     binary_tree(binary_tree &&other)
         : root_(other.root_) {
         other.root_.reset();
     }
+# endif // !defined(BOOST_NO_RVALUE_REFERENCES)
 
     binary_tree &operator = (const binary_tree &other) {
         binary_tree(other).swap(*this);
         return *this;
     }
 
+# if !defined(BOOST_NO_RVALUE_REFERENCES)
     binary_tree &operator = (binary_tree &&other) {
         binary_tree(other).swap(std::move(*this));
         return *this;
     }
+# endif // !defined(BOOST_NO_RVALUE_REFERENCES)
 
     ~binary_tree() {
 

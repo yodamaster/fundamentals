@@ -11,17 +11,9 @@ else()
   message(FATAL_ERROR " Unable to locate Boost.")
 endif()
 
-set(CMAKE_CXX_FLAGS "-std=c++0x -g")
-#set(EXAMPLES
-#  boost_range_algorithm
-#  )
-#
-#foreach(example ${EXAMPLES})
-#  add_executable(${tutorials_BINARY_DIR}/tutorials-${example} examples/${example}.cpp)
-#  target_link_libraries(${tutorials_BINARY_DIR}/tutorials-${example} ${Boost_REGEX_LIBRARY})
-#endforeach(example)
-
-#add_executable(tutorials-rbtree examples/test_red_black_tree.c examples/red_black_tree.c examples/stack.c examples/misc.c)
+if (GCC)
+  set(CMAKE_CXX_FLAGS "-std=c++0x -g")
+endif (GCC)
 
 add_subdirectory(examples)
 enable_testing()
