@@ -405,7 +405,7 @@ private:
     template <
         class Func
         >
-    list merge(const list &left, const list &right, const Func &func) const {
+    list &&merge(const list &left, const list &right, const Func &func) const {
         list result;
         std::shared_ptr<const node_type>
             left_node(left.head_node()), right_node(right.head_node());
@@ -429,7 +429,7 @@ private:
                 right_node = right_node->next;
             }
         }
-        return result;
+        return std::move(result);
     }
 
     std::shared_ptr<node_type> head_, tail_;
