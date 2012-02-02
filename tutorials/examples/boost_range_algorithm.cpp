@@ -149,7 +149,7 @@ main(int argc, char *argv[]) {
 
         std::vector<std::string> vec_str(sandbox::create_vec_str());
         std::list<std::string> list_str;
-        // boost::transform(vec_str, std::back_inserter(list_str), arg1 + " FC");
+        //boost::transform(vec_str, std::back_inserter(list_str), arg1 + " FC");
         sandbox::print_range(list_str, "list_str");
     }
 
@@ -158,7 +158,7 @@ main(int argc, char *argv[]) {
 
         std::vector<double> vec_dbl(10);
         boost::generate(vec_dbl, &std::rand);
-        boost::for_each(vec_dbl, arg1 /= INT_MAX);
+        //boost::for_each(vec_dbl, arg1 /= INT_MAX);
         sandbox::print_range(vec_dbl, "vec_dbl");
         boost::sort(vec_dbl, std::less<double>());
         sandbox::print_range(vec_dbl, "vec_dbl");
@@ -167,18 +167,16 @@ main(int argc, char *argv[]) {
     {
         std::cout << " *** Test Counting Iterator ***" << std::endl;
 
-        typedef boost::counting_iterator<int> Iter;
-        sandbox::print_range(std::make_pair(Iter(1), Iter(7)), "counting_iterator");
+        sandbox::print_range(boost::counting_range(1, 7), "counting_iterator");
     }
 
     {
         std::cout << " *** Test Push Back/Front ***" << std::endl;
 
-        typedef boost::counting_iterator<int> Iter;
         std::vector<int> vec_int, vec_int_rev;
-        boost::push_back(vec_int, std::make_pair(Iter(1), Iter(7)));
+        boost::push_back(vec_int, boost::counting_range(1, 7));
         sandbox::print_range(vec_int, "vec_int");
-        boost::push_front(vec_int_rev, std::make_pair(Iter(1), Iter(7)));
+        boost::push_front(vec_int_rev, boost::counting_range(1, 7));
         sandbox::print_range(vec_int_rev, "vec_int_rev");
     }
 
@@ -187,7 +185,7 @@ main(int argc, char *argv[]) {
 
         std::vector<double> vec_dbl(10);
         boost::generate(vec_dbl, &std::rand);
-        boost::for_each(vec_dbl, arg1 /= INT_MAX);
+        //boost::for_each(vec_dbl, arg1 /= INT_MAX);
         boost::remove_erase_if(vec_dbl, arg1 < .5);
         sandbox::print_range(vec_dbl, "vec_dbl");
     }
@@ -253,7 +251,8 @@ main(int argc, char *argv[]) {
 
         std::string str = "come on the saints!";
         boost::for_each(str, arg1 = bind(::toupper, arg1));
-        sandbox::print_range(str, "str");
+	std::cout << str << std::endl;
+        //sandbox::print_range(str, "str");
     }
 
     return 0;
