@@ -5,8 +5,6 @@
 
 
 #define BOOST_TEST_MODULE Binary tree test
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include <glynos/binary_tree.hpp>
 #include <glynos/list.hpp>

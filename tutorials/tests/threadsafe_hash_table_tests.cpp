@@ -5,8 +5,6 @@
 
 
 #define BOOST_TEST_MODULE Thread-safe hash table tests
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include <glynos/threadsafe/hash_table.hpp>
 #include <glynos/list.hpp>

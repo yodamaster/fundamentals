@@ -5,8 +5,6 @@
 
 
 #define BOOST_TEST_MODULE Generic tree test
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include <glynos/generic_tree.hpp>
 #include <glynos/list.hpp>

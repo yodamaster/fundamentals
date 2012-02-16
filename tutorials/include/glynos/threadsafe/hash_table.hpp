@@ -11,6 +11,7 @@
 # define __GLYNOS_THREADSAFE_HASH_TABLE_INC__
 
 # include <glynos/list.hpp>
+# include <mutex>
 # include <functional>
 
 
@@ -52,8 +53,8 @@ class hash_table {
             return std::shared_ptr<entry>();
         }
 
-        std;:shared_ptr<Value> value_for(const Key &key) {
-            std::unique_ptr<std::shared_mutex> lock(mutex_);
+        std::shared_ptr<Value> value_for(const Key &key) {
+			return std::make_shared(new Value);
         }
 
     };

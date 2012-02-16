@@ -1,4 +1,4 @@
-find_package(Boost 1.46.0 COMPONENTS unit_test_framework)
+find_package(Boost 1.48.0 REQUIRED unit_test_framework)
 
 if (Boost_FOUND)
   set(Boost_USE_STATIC_LIBS OFF)

@@ -1,4 +1,4 @@
-//             Copyright Glyn Matthews 2010, 2011.
+//             Copyright Glyn Matthews 2010, 2011, 2012.
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
@@ -8,56 +8,41 @@
 #include <boost/range/algorithm_ext.hpp>
 #include <boost/range/counting_range.hpp>
 #include <boost/range/adaptors.hpp>
-#include <boost/spirit/home/phoenix.hpp>
 #include <vector>
 #include <string>
 #include <list>
-#include <map>
-#include <iterator>
 #include <functional>
 #include <iostream>
 
-
 namespace sandbox {
 std::vector<std::string> create_vec_str() {
-    std::vector<std::string> vec_str;
-    vec_str.push_back("Manchester United");
-    vec_str.push_back("Liverpool");
-    vec_str.push_back("Chelsea");
-    vec_str.push_back("Aston Vanilla");
-    vec_str.push_back("Arsenal");
-    vec_str.push_back("Everton");
-    vec_str.push_back("Wigan");
-    vec_str.push_back("West Ham United");
-    vec_str.push_back("Manchester City");
-    vec_str.push_back("Sunderland");
-    vec_str.push_back("Fulham");
-    vec_str.push_back("Bolton Wanderers");
-    vec_str.push_back("Hull");
-    vec_str.push_back("Portsmouth");
-    vec_str.push_back("Newcastle United");
-    vec_str.push_back("Tottenham Hotspurs");
-    vec_str.push_back("Stoke City");
-    vec_str.push_back("Blackburn Rovers");
-    vec_str.push_back("Middlesbrough");
-    vec_str.push_back("West Bromwich Albion");
-    return vec_str;
+    return std::vector<std::string>{
+        "Manchester City",
+        "Manchester United",
+        "Tottenham Hotspurs",
+        "Arsenal",
+        "Chelsea",
+        "Newcastle United",
+        "Liverpool",
+        "Norwich City",
+        "Sunderland",
+        "Everton",
+        "Swansea City",
+        "Fulham",
+        "Stoke City",
+        "West Bromwich Albion",
+        "Aston Vanilla",
+        "Queens Park Rangers",
+        "Blackburn Rovers",
+        "Wolverhampton Wanderers",
+        "Bolton Wanderers",
+        "Wigan",
+        };
 }
-
 
 std::vector<int> create_vec_int_unsorted() {
-    std::vector<int> vec_int;
-    vec_int.push_back(2);
-    vec_int.push_back(32);
-    vec_int.push_back(43);
-    vec_int.push_back(21);
-    vec_int.push_back(12);
-    vec_int.push_back(19);
-    vec_int.push_back(38);
-    vec_int.push_back(27);
-    return vec_int;
+    return std::vector<int>{2, 32, 43, 21, 12, 19, 38, 27,};
 }
-
 
 template <
     class Rng
@@ -72,7 +57,6 @@ struct is_member_of_t {
     { return boost::end(rng_) != boost::find(rng_, value); }
 };
 
-
 template <
     class Rng
     >
@@ -82,18 +66,16 @@ is_member_of(const Rng &rng) {
     return is_member_of_t<Rng>(rng);
 }
 
-
 template <
     class Rng
     >
 inline
 typename boost::range_iterator<Rng>::type
 midpoint(Rng &rng) {
-    boost::function_requires<boost::RandomAccessRangeConcept<Rng> >();
+    boost::function_requires<boost::RandomAccessRangeConcept<Rng>>();
     auto size = boost::end(rng) - boost::begin(rng);
     return boost::begin(rng) + size / 2;
 }
-
 
 template <
     class Rng
@@ -101,24 +83,28 @@ template <
 inline
 void
 print_range(const Rng &rng, const char *name) {
-    using boost::phoenix::arg_names::arg1;
+    typedef typename Rng::value_type value_type;
+    std::function<void (const value_type &)> print =
+        [](const value_type &value){std::cout << value << ", ";};
+
     std::cout << " ++++ " << name << std::endl;
-    boost::for_each(rng, std::cout << arg1 << ", ");
+    boost::for_each(rng, print);
     std::cout << std::endl;
+}
+
+std::string add_fc(const std::string &name) {
+     return name + " FC";
 }
 } // namespace sandbox
 
-
 int
 main(int argc, char *argv[]) {
-    using boost::phoenix::bind;
-    using boost::phoenix::arg_names::arg1;
-
-    const std::string london_teams[] = { "Chelsea",
-                                         "Arsenal",
-                                         "Fulham",
-                                         "Tottenham Hotspurs",
-                                         "West Ham United" };
+    const auto london_teams =
+        std::vector<std::string>{ "Arsenal",
+                                  "Chelsea",
+                                  "Fulham",
+                                  "Queens Park Rangers",
+                                  "Tottenham Hotspurs", };
 
     {
         std::cout << " *** Test Copy ***" << std::endl;
@@ -149,7 +135,7 @@ main(int argc, char *argv[]) {
 
         std::vector<std::string> vec_str(sandbox::create_vec_str());
         std::list<std::string> list_str;
-        //boost::transform(vec_str, std::back_inserter(list_str), arg1 + " FC");
+        boost::transform(vec_str, std::back_inserter(list_str), [=](const std::string &team){return team + " FC";});
         sandbox::print_range(list_str, "list_str");
     }
 
@@ -158,7 +144,7 @@ main(int argc, char *argv[]) {
 
         std::vector<double> vec_dbl(10);
         boost::generate(vec_dbl, &std::rand);
-        //boost::for_each(vec_dbl, arg1 /= INT_MAX);
+        boost::for_each(vec_dbl, [](double &arg){arg /= INT_MAX;});
         sandbox::print_range(vec_dbl, "vec_dbl");
         boost::sort(vec_dbl, std::less<double>());
         sandbox::print_range(vec_dbl, "vec_dbl");
@@ -185,8 +171,8 @@ main(int argc, char *argv[]) {
 
         std::vector<double> vec_dbl(10);
         boost::generate(vec_dbl, &std::rand);
-        //boost::for_each(vec_dbl, arg1 /= INT_MAX);
-        boost::remove_erase_if(vec_dbl, arg1 < .5);
+        boost::for_each(vec_dbl, [](double &arg){arg /= INT_MAX;});
+        boost::remove_erase_if(vec_dbl, [](double arg){return arg < .5;});
         sandbox::print_range(vec_dbl, "vec_dbl");
     }
 
@@ -195,7 +181,7 @@ main(int argc, char *argv[]) {
 
         std::vector<std::string> vec_str(sandbox::create_vec_str());
         sandbox::print_range(vec_str, "vec_str");
-        boost::replace_if(vec_str, arg1 == "Aston Vanilla", "Aston Villa");
+        boost::replace_if(vec_str, [](const std::string &arg) { return arg  == "Aston Vanilla"; }, "Aston Villa");
         sandbox::print_range(vec_str, "vec_str");
     }
 
@@ -204,8 +190,7 @@ main(int argc, char *argv[]) {
 
         // find Everton
         std::vector<std::string> vec_str(sandbox::create_vec_str());
-        std::vector<std::string>::const_iterator it =
-            boost::find(vec_str, "Everton");
+        auto it = boost::find(vec_str, "Everton");
         if (it != vec_str.end()) {
             std::cout << " >>> found " << *it << std::endl;
         }
@@ -240,19 +225,14 @@ main(int argc, char *argv[]) {
 
         std::string s("New path to helicon part 1.");
         sandbox::print_range(s | tokenized("\\s+", -1), "Tokenized string");
-
-        // std::vector<std::string> tokenized_s =
-        //     boost::copy_range<std::vector<std::string> >(s | tokenized("\\s+", -1));
-        // sandbox::print_range(boost::sort(tokenized_s), "Sorted tokenized string");
     }
 
     {
         std::cout << " *** Test toupper ***" << std::endl;
 
         std::string str = "come on the saints!";
-        boost::for_each(str, arg1 = bind(::toupper, arg1));
-	std::cout << str << std::endl;
-        //sandbox::print_range(str, "str");
+        boost::for_each(str, [](char &c) {c = ::toupper(c);});
+        std::cout << str << std::endl;
     }
 
     return 0;

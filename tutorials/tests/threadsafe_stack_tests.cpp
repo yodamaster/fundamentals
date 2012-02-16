@@ -5,8 +5,6 @@
 
 
 #define BOOST_TEST_MODULE Thread-safe stack tests
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include <glynos/threadsafe/stack.hpp>
 

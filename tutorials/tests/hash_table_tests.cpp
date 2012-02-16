@@ -5,8 +5,6 @@
 
 
 #define BOOST_TEST_MODULE Hash table tests
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include <glynos/hash_table.hpp>
 #include <iostream>
@@ -35,7 +33,7 @@ unsigned int my_hash(int x) {
     return x % 701;
 }
 
-typedef std::size_t (*Hash)(int);
+typedef unsigned int (*Hash)(int);
 
 BOOST_AUTO_TEST_CASE(constructor_test) {
     hash_table<int, int, Hash> instance;

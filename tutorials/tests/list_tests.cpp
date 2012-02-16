@@ -5,8 +5,6 @@
 
 
 #define BOOST_TEST_MODULE List test
-#define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MAIN
 #include <boost/test/unit_test.hpp>
 #include <glynos/list.hpp>
 #include "list_io.hpp"
