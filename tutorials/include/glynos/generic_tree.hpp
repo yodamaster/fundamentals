@@ -32,7 +32,7 @@ public:
             >
         void walk(Func &func) {
             stack<std::shared_ptr<node_type> > nodes;
-            std::shared_ptr<node_type> node = children.begin();
+            auto node = children.begin();
 
             while (true) {
                 if (node != children.end()) {
@@ -54,7 +54,7 @@ public:
         }
 
         void add_child(const value_type &value) {
-            std::shared_ptr<node_type> node(new node_type(value));
+            auto node(std::make_shared(new node_type(value)));
             children.add_tail(node);
         }
 

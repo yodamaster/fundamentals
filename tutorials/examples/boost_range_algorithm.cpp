@@ -54,7 +54,7 @@ struct is_member_of_t {
         class T
         >
     bool operator () (const T &value) const
-    { return boost::end(rng_) != boost::find(rng_, value); }
+    { return std::end(rng_) != boost::find(rng_, value); }
 };
 
 template <
@@ -73,8 +73,8 @@ inline
 typename boost::range_iterator<Rng>::type
 midpoint(Rng &rng) {
     boost::function_requires<boost::RandomAccessRangeConcept<Rng>>();
-    auto size = boost::end(rng) - boost::begin(rng);
-    return boost::begin(rng) + size / 2;
+    auto size = std::end(rng) - std::begin(rng);
+    return std::begin(rng) + size / 2;
 }
 
 template <
@@ -90,10 +90,6 @@ print_range(const Rng &rng, const char *name) {
     std::cout << " ++++ " << name << std::endl;
     boost::for_each(rng, print);
     std::cout << std::endl;
-}
-
-std::string add_fc(const std::string &name) {
-     return name + " FC";
 }
 } // namespace sandbox
 
@@ -208,18 +204,18 @@ main(int argc, char *argv[]) {
         using boost::adaptors::tokenized;
 
         std::vector<std::string> league_table(sandbox::create_vec_str());
-        sandbox::print_range(std::make_pair(boost::begin(league_table),
-                                            boost::begin(league_table) + 6)
+        sandbox::print_range(std::make_pair(std::begin(league_table),
+                                            std::begin(league_table) + 6)
                              | filtered(sandbox::is_member_of(london_teams)),
                              "London teams in top 6");
 
-        sandbox::print_range(std::make_pair(boost::begin(league_table),
+        sandbox::print_range(std::make_pair(std::begin(league_table),
                                             sandbox::midpoint(league_table))
                              | filtered(sandbox::is_member_of(london_teams)),
                              "London teams in top half");
 
         sandbox::print_range(std::make_pair(sandbox::midpoint(league_table),
-                                            boost::end(league_table))
+                                            std::end(league_table))
                              | filtered(sandbox::is_member_of(london_teams)),
                              "London teams in bottom half");
 

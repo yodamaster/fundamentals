@@ -66,12 +66,12 @@ public:
     }
 
     bool insert(const Key &key, const Value &value) {
-        std::shared_ptr<const node_type> node = find(key);
+        auto node = find(key);
         if (node) {
             return false;
         }
 
-        std::shared_ptr<node_type> new_node(new node_type(key, value, compare_));
+        auto new_node(std::make_shared(new node_type(key, value, compare_)));
         if (!empty()) {
             root_->insert(new_node);
         }
@@ -89,7 +89,7 @@ public:
     }
 
     void remove(const Key &key) {
-        std::shared_ptr<node_type> node = find(key);
+        auto node = find(key);
         if (key) {
             if (!node->left) {
                 transplant(node, node->right);
@@ -98,7 +98,7 @@ public:
                 transplant(node, node->left);
             }
             else {
-                std::shared_ptr<node_type> y = node->right->minimum();
+                auto y = node->right->minimum();
                 if (y->parent != node) {
                     transplant(y, y->right);
                     y->right = node->right;

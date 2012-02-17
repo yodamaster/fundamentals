@@ -79,22 +79,22 @@ public:
     }
 
     bool insert(const Key &key, const Value &value) {
-        unsigned int hash = hash_fun_(key);
-        unsigned int index = hash_to_index(hash);
+        auto hash = hash_fun_(key);
+        auto index = hash_to_index(hash);
         for (auto node = table_[index].data.head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {
                 return false;
             }
         }
-        std::shared_ptr<entry> e(new entry(key, value, hash));
+        auto e(std::make_shared(new entry(key, value, hash)));
         table_[index].data.add_tail(e);
         return true;
     }
 
     std::shared_ptr<const Value> find(const Key &key) const {
-        unsigned int hash = hash_fun_(key);
-        unsigned int index = hash_to_index(hash);
+        auto hash = hash_fun_(key);
+        auto index = hash_to_index(hash);
         std::shared_ptr<const Value> result;
         for (auto node = table_[index].data.head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
@@ -107,8 +107,8 @@ public:
     }
 
     void remove(const Key &key) {
-        unsigned int hash = hash_fun_(key);
-        unsigned int index = hash_to_index(hash);
+        auto hash = hash_fun_(key);
+        auto index = hash_to_index(hash);
         for (auto node = table_[index].data.head_node(); node; node = node->next) {
             if (((*node->value)->hash == hash) &&
                 (*(*node->value)->key == key)) {

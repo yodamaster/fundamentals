@@ -19,10 +19,8 @@ template <
     class Pred
     >
 List merge(const List &left, const List &right, Pred pred) {
-    typedef typename List::const_iterator iterator;
-
     List result;
-    iterator left_it = left.begin(), right_it = right.begin();
+    auto left_it = left.begin(), right_it = right.begin();
     while ((left_it != left.end()) ||
            (right_it != right.end())) {
         if ((left_it != left.end()) &&

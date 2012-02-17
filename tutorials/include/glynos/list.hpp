@@ -78,10 +78,8 @@ public:
             head_.reset(new node_type(*other.head_->value));
             tail_ = head_;
 
-            for (std::shared_ptr<node_type> node = other.head_->next;
-                 node;
-                 node = node->next) {
-                std::shared_ptr<node_type> new_node(new node_type(*node->value));
+            for (auto node = other.head_->next; node; node = node->next) {
+                auto new_node(std::make_shared(new node_type(*node->value));
                 tail_->next = new_node;
                 new_node->prev = tail_;
                 tail_ = new_node;
@@ -140,7 +138,7 @@ public:
     // \param value The value to add at the head of the list.
     //
     void add_head(const T &value) {
-        std::shared_ptr<node_type> node(new node_type(value));
+        auto node(std::make_shared(new node_type(value)));
         if (head_) {
             head_->prev = node;
             node->next = head_;
@@ -157,7 +155,7 @@ public:
     //
     void remove_head() {
         if (head_) {
-            std::shared_ptr<node_type> new_head = head_->next;
+            auto new_head = head_->next;
             if (new_head) {
                 new_head->prev.reset();
             }
@@ -209,7 +207,7 @@ public:
     // \param value A value to add to the tail.
     //
     void add_tail(const T &value) {
-        std::shared_ptr<node_type> node(new node_type(value));
+        auto node(std::make_shared(new node_type(value)));
         if (tail_) {
             tail_->next = node;
             node->prev = tail_;
@@ -226,7 +224,7 @@ public:
     //
     void remove_tail() {
         if (tail_) {
-            std::shared_ptr<node_type> new_tail = tail_->prev;
+            auto new_tail = tail_->prev;
             if (new_tail) {
                 new_tail->next.reset();
             }
@@ -278,7 +276,7 @@ public:
     //        list.
     //
     void insert_after(std::shared_ptr<node_type> node, const T &value) {
-        std::shared_ptr<node_type> new_node(new node_type(value));
+        auto new_node(std::make_shared(new node_type(value)));
         if (node->next) {
             new_node->next = node->next;
             node->next->prev = new_node;
@@ -292,7 +290,7 @@ public:
     // \brief Removes the node from the list.
     // \return A
     std::shared_ptr<node_type> remove(std::shared_ptr<node_type> node) {
-        std::shared_ptr<node_type> next = node->next;
+        auto next = node->next;
         if (node->prev) {
             node->prev->next = next;
         }
@@ -316,7 +314,7 @@ public:
         class Func
         >
     void walk(const Func &func) {
-        for (std::shared_ptr<node_type> node = head_; node; node = node->next) {
+        for (auto node = head_; node; node = node->next) {
             func(*node->value);
         }
     }
@@ -329,7 +327,7 @@ public:
         class Func
         >
     void reverse_walk(const Func &func) {
-        for (std::shared_ptr<node_type> node = tail_; node; node = node->prev) {
+        for (auto node = tail_; node; node = node->prev) {
             func(*node->value);
         }
     }
@@ -342,14 +340,14 @@ public:
         class Func
         >
     list sort(const Func &func) const {
-        unsigned int count_ = count();
+        auto count_ = count();
         if (count_ <= 1) {
             return *this;
         }
 
         list left, right;
-        unsigned int middle = count_ >> 1;
-        std::shared_ptr<const node_type> node = head_;
+        auto middle = count_ >> 1;
+        auto node = head_;
 
         for (unsigned int i = 0; i < middle; ++i) {
             left.add_tail(*node->value);
@@ -373,9 +371,7 @@ public:
         class Func
         >
     std::shared_ptr<const node_type> find(const Func &func) const {
-        for (std::shared_ptr<node_type> node = head_;
-             node;
-             node = node->next) {
+        for (auto node = head_; node; node = node->next) {
             if (func(*node->value)) {
                 return  node;
             }
@@ -395,10 +391,8 @@ public:
     //
     unsigned int count() const {
         unsigned int count = 0;
-        // walk([&count](unsigned int &count) { ++count; });
-        for (std::shared_ptr<node_type> node = head_;
-             node;
-             node = node->next) {
+		//walk([&count](const T &) { ++count; });
+        for (auto node = head_; node; node = node->next) {
             ++count;
         }
         return count;
@@ -411,8 +405,7 @@ private:
         >
     list &&merge(const list &left, const list &right, const Func &func) const {
         list result;
-        std::shared_ptr<const node_type>
-            left_node(left.head_node()), right_node(right.head_node());
+        auto left_node(left.head_node()), right_node(right.head_node());
         while (left_node || right_node) {
             if (left_node && right_node) {
                 if (func(*left_node->value, *right_node->value)) {

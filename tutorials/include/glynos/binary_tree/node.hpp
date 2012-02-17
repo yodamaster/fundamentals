@@ -62,7 +62,7 @@ public:
     }
 
     void insert(std::shared_ptr<binary_tree_node> node) {
-        std::shared_ptr<binary_tree_node> x = this->shared_from_this(), y;
+        auto x = this->shared_from_this(), y;
         while (x) {
             y = x;
             if (compare(*node->key, *x->key)) {
@@ -85,7 +85,7 @@ public:
     }
 
     std::shared_ptr<binary_tree_node> find(const Key &key) {
-        std::shared_ptr<binary_tree_node> node = this->shared_from_this();
+        auto node = this->shared_from_this();
         while (node && (key != *node->key)) {
             if (compare(key, *node->key)) {
                 node = node->left;
@@ -98,7 +98,7 @@ public:
     }
 
     std::shared_ptr<binary_tree_node> minimum() {
-        std::shared_ptr<binary_tree_node> node = this->shared_from_this();
+        auto node = this->shared_from_this();
         while (node->left) {
             node = node->left;
         }
@@ -106,7 +106,7 @@ public:
     }
 
     std::shared_ptr<binary_tree_node> maximum() {
-        std::shared_ptr<binary_tree_node> node = this->shared_from_this();
+        auto node = this->shared_from_this();
         while (node->right) {
             node = node->right;
         }
@@ -133,7 +133,7 @@ public:
     void inorder_walk_1(const Func &func) {
         // this implementation doesn't use a stack, or recursion,
         // but does modify the original structure.
-        std::shared_ptr<binary_tree_node> node = this->shared_from_this(), pre;
+        auto node = this->shared_from_this(), pre;
         while (node) {
             if (!node->left) {
                 func(*node->key, *node->value);
@@ -164,7 +164,7 @@ public:
     void inorder_walk_2(const Func &func) {
         // uses a stack, doesn't modify structure
         stack<std::shared_ptr<binary_tree_node> > nodes;
-        std::shared_ptr<binary_tree_node> node = this->shared_from_this();
+        auto node = this->shared_from_this();
 
         while (true) {
             if (node) {
@@ -206,7 +206,7 @@ public:
         queue<std::shared_ptr<binary_tree_node> > nodes;
         nodes.push(this->shared_from_this());
         while (!nodes.empty()) {
-            std::shared_ptr<binary_tree_node> node = nodes.head();
+            auto node = nodes.head();
             nodes.pop();
 
             func(*node->key, *node->value);
@@ -224,7 +224,7 @@ public:
         queue<std::shared_ptr<const binary_tree_node> > nodes;
         nodes.push(this->shared_from_this());
         while (!nodes.empty()) {
-            std::shared_ptr<const binary_tree_node> node = nodes.head();
+            auto node = nodes.head();
             nodes.pop();
             ++count;
             if (node->left) {

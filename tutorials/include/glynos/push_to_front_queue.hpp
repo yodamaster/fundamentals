@@ -32,8 +32,7 @@ public:
         class Func
         >
     const T &push_to_front(const Func &func) const {
-        std::shared_ptr<const typename list<T>::node_type> node =
-            queue_.find(func);
+        auto node = queue_.find(func);
         if (node) {
             queue_.remove(node);
             queue_.add_head(node);
