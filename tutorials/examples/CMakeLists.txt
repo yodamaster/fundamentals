@@ -1,5 +1,7 @@
 set(EXAMPLES
   boost_range_algorithm
+  merge_sort
+  quick_sort
   parallel_for_each
   parallel_merge_sort
   async_test
