@@ -46,7 +46,7 @@ template <
     class Pred
     >
 void quick_sort(Seq &seq, const Pred &pred) {
-    quick_sort(seq.begin(), seq.end(), pred);
+    quick_sort(std::begin(seq), std::end(seq), pred);
 }
 } // namespace algorithms
 } // namespace glynos

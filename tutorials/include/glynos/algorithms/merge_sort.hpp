@@ -20,7 +20,7 @@ template <
     >
 List merge(const List &left, const List &right, Pred pred) {
     List result;
-    auto left_it = left.begin(), right_it = right.begin();
+    auto left_it = std::begin(left), right_it = std::begin(right);
     while ((left_it != left.end()) ||
            (right_it != right.end())) {
         if ((left_it != left.end()) &&
@@ -64,15 +64,15 @@ List merge_sort(const List &list, const Pred &pred) {
     /**
      * Find the middle of the sequence.
      */
-    iterator middle = list.begin();
+    iterator middle = std::begin(list);
     std::advance(middle, (size >> 1));
 
     /**
      * Recursively call merge sort on the first and the second part of
      * the sequence.
      */
-    return details::merge(merge_sort(List(list.begin(), middle), pred),
-                          merge_sort(List(middle, list.end()), pred),
+    return details::merge(merge_sort(List(std::begin(list), middle), pred),
+                          merge_sort(List(middle, std::end(list)), pred),
                           pred);
 }
 } // namespace algorithms

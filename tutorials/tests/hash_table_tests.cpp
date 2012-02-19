@@ -13,10 +13,6 @@
 using glynos::hash_table;
 using glynos::list;
 
-#include <boost/spirit/home/phoenix.hpp>
-using boost::phoenix::arg_names::arg1;
-using boost::phoenix::arg_names::arg2;
-
 template <
     class T
     >

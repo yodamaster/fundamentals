@@ -87,7 +87,7 @@ public:
                 return false;
             }
         }
-        auto e(std::make_shared(new entry(key, value, hash)));
+		std::shared_ptr<entry> e(new entry(key, value, hash));
         table_[index].data.add_tail(e);
         return true;
     }

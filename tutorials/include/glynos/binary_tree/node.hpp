@@ -62,7 +62,7 @@ public:
     }
 
     void insert(std::shared_ptr<binary_tree_node> node) {
-        auto x = this->shared_from_this(), y;
+		std::shared_ptr<binary_tree_node> x = this->shared_from_this(), y;
         while (x) {
             y = x;
             if (compare(*node->key, *x->key)) {
@@ -133,7 +133,7 @@ public:
     void inorder_walk_1(const Func &func) {
         // this implementation doesn't use a stack, or recursion,
         // but does modify the original structure.
-        auto node = this->shared_from_this(), pre;
+		std::shared_ptr<binary_tree_node> node = this->shared_from_this(), pre;
         while (node) {
             if (!node->left) {
                 func(*node->key, *node->value);

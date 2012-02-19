@@ -71,7 +71,7 @@ public:
             return false;
         }
 
-        auto new_node(std::make_shared(new node_type(key, value, compare_)));
+		std::shared_ptr<node_type> new_node(new node_type(key, value, compare_));
         if (!empty()) {
             root_->insert(new_node);
         }

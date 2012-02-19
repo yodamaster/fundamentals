@@ -32,10 +32,10 @@ public:
             >
         void walk(Func &func) {
             stack<std::shared_ptr<node_type> > nodes;
-            auto node = children.begin();
+            auto node = std::begin(children);
 
             while (true) {
-                if (node != children.end()) {
+                if (node != std::end(children)) {
                     nodes.push(node);
                     ++node;
                 }

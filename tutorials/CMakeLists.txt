@@ -11,9 +11,9 @@ else()
   message(FATAL_ERROR " Unable to locate Boost.")
 endif()
 
-if (GCC)
+#if (GCC)
   set(CMAKE_CXX_FLAGS "-std=c++0x -g")
-endif (GCC)
+#endif (GCC)
 
 add_subdirectory(examples)
 enable_testing()

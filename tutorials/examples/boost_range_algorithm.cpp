@@ -177,7 +177,8 @@ main(int argc, char *argv[]) {
 
         std::vector<std::string> vec_str(sandbox::create_vec_str());
         sandbox::print_range(vec_str, "vec_str");
-        boost::replace_if(vec_str, [](const std::string &arg) { return arg  == "Aston Vanilla"; }, "Aston Villa");
+        boost::replace_if(vec_str, [](const std::string &arg)
+						  { return arg  == "Aston Vanilla"; }, "Aston Villa");
         sandbox::print_range(vec_str, "vec_str");
     }
 
@@ -230,6 +231,8 @@ main(int argc, char *argv[]) {
         boost::for_each(str, [](char &c) {c = ::toupper(c);});
         std::cout << str << std::endl;
     }
+
+
 
     return 0;
 }

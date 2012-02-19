@@ -13,10 +13,6 @@
 
 using glynos::list;
 
-#include <boost/spirit/home/phoenix.hpp>
-using boost::phoenix::arg_names::arg1;
-using boost::phoenix::arg_names::arg2;
-
 
 BOOST_AUTO_TEST_CASE(constructor_test) {
     list<int> instance;
@@ -195,8 +191,9 @@ BOOST_AUTO_TEST_CASE(sort_1_element_test) {
     instance.add_tail(10);
     instance.sort(std::less<int>());
     BOOST_CHECK_EQUAL(instance.count(), 1U);
-    BOOST_CHECK_EQUAL(*instance.head_node()->value, 10);
-    BOOST_CHECK_EQUAL(*instance.tail_node()->value, 10);
+	BOOST_CHECK_EQUAL(instance.head_node(), instance.tail_node());
+    //BOOST_CHECK_EQUAL(*instance.head_node()->value, 10);
+    //BOOST_CHECK_EQUAL(*instance.tail_node()->value, 10);
 }
 
 BOOST_AUTO_TEST_CASE(sort_2_elements_test) {

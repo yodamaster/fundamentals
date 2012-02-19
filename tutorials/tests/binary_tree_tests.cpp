@@ -16,10 +16,6 @@
 using glynos::binary_tree;
 using glynos::list;
 
-#include <boost/spirit/home/phoenix.hpp>
-using boost::phoenix::arg_names::arg1;
-using boost::phoenix::arg_names::arg2;
-
 
 BOOST_AUTO_TEST_CASE(constructor_test) {
     binary_tree<int, int, std::less<int> > instance;

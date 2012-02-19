@@ -65,7 +65,7 @@ public:
     //
     list(std::initializer_list<T> items) {
         using std::placeholders::_1;
-        std::for_each(items.begin(), items.end(),
+        std::for_each(std::begin(items), std::end(items),
                       std::bind(&list<T>::add_tail, this, _1));
     }
 # endif // !defined(BOOST_NO_INITIALIZER_LISTS)
@@ -79,7 +79,7 @@ public:
             tail_ = head_;
 
             for (auto node = other.head_->next; node; node = node->next) {
-                auto new_node(std::make_shared(new node_type(*node->value));
+				std::shared_ptr<node_type> new_node(new node_type(*node->value));
                 tail_->next = new_node;
                 new_node->prev = tail_;
                 tail_ = new_node;
@@ -138,7 +138,7 @@ public:
     // \param value The value to add at the head of the list.
     //
     void add_head(const T &value) {
-        auto node(std::make_shared(new node_type(value)));
+		std::shared_ptr<node_type> node(new node_type(value));
         if (head_) {
             head_->prev = node;
             node->next = head_;
@@ -207,7 +207,7 @@ public:
     // \param value A value to add to the tail.
     //
     void add_tail(const T &value) {
-        auto node(std::make_shared(new node_type(value)));
+		std::shared_ptr<node_type> node(new node_type(value));
         if (tail_) {
             tail_->next = node;
             node->prev = tail_;
