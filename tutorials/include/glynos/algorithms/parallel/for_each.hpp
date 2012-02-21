@@ -8,10 +8,7 @@
 # define __GLYNOS_ALGORITHMS_CONCURRENT_PARALLEL_FOR_EACH_INC__
 
 # include <thread>
-# include <future>
-# include <memory>
 # include <algorithm>
-# include <iterator>
 # include <vector>
 
 namespace glynos {
@@ -37,13 +34,13 @@ F for_each(I first, I last, F f) {
         /**
          * Subdivide the for_each algorithm into `num_threads` tasks.
          */
-        std::vector<std::future<F> > futures(num_threads - 1);
+		std::vector<std::thread> threads(num_threads - 1);
 
         auto block_begin = first;
-        for (auto &future : futures) {
+        for (auto &thread : threads) {
             auto block_end = block_begin;
             std::advance(block_end, block_size);
-            future = std::move(std::async(std::launch::async, std::for_each<I, F>, block_begin, block_end, f));
+            thread = std::move(std::thread(std::for_each<I, F>, block_begin, block_end, f));
             block_begin = block_end;
         }
 
@@ -55,8 +52,8 @@ F for_each(I first, I last, F f) {
         /**
          * Don't exit until tasks are complete.
          */
-        for (auto &future : futures) {
-            future.get();
+        for (auto &thread : threads) {
+            thread.join();
         }
     }
     return f;
