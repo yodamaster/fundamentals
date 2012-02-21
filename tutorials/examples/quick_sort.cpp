@@ -14,6 +14,10 @@
 
 int
 main(int argc, char *argv[]) {
+	using glynos::algorithms::quick_sort;
+
+	auto less = [](const std::string &team1, const std::string &team2) { return team1 < team2; };
+
     std::vector<std::string> teams{
         "Manchester City",
         "Manchester United",
@@ -39,8 +43,7 @@ main(int argc, char *argv[]) {
 
     boost::for_each(teams, [](const std::string &team) { std::cout << team << ", "; });
     std::cout << std::endl;
-	glynos::algorithms::quick_sort(teams,
-        [](const std::string &team1, const std::string &team2) { return team1 < team2; });
+	quick_sort(teams, less);
     boost::for_each(teams, [](const std::string &team) { std::cout << team << ", "; });
     std::cout << std::endl;
 

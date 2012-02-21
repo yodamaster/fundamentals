@@ -9,6 +9,7 @@
 
 
 # include <algorithm>
+# include <vector>
 
 
 namespace glynos {
@@ -20,25 +21,9 @@ template <
     >
 List merge(const List &left, const List &right, Pred pred) {
     List result;
-    auto left_it = std::begin(left), right_it = std::begin(right);
-    while ((left_it != left.end()) ||
-           (right_it != right.end())) {
-        if ((left_it != left.end()) &&
-            (right_it != right.end())) {
-            if (pred(*left_it, *right_it)) {
-                result.push_back(*left_it++);
-            }
-            else {
-                result.push_back(*right_it++);
-            }
-        }
-        else if (left_it != left.end()) {
-            result.push_back(*left_it++);
-        }
-        else {
-            result.push_back(*right_it++);
-        }
-    }
+	std::merge(std::begin(left), std::end(left),
+			   std::begin(right), std::end(right),
+			   std::back_inserter(result), pred);
     return result;
 }
 }// namespace details
@@ -48,15 +33,12 @@ template <
     class Pred
     >
 List merge_sort(const List &list, const Pred &pred) {
-    typedef typename List::size_type size_type;
-    typedef typename List::const_iterator iterator;
-
-    size_type size = list.size();
 
     /**
      * If there is only one element, it's already sorted.  This is the
      * termination condition.
      */
+    auto size = list.size();
     if (size <= 1) {
         return list;
     }
@@ -64,7 +46,7 @@ List merge_sort(const List &list, const Pred &pred) {
     /**
      * Find the middle of the sequence.
      */
-    iterator middle = std::begin(list);
+    auto middle = std::begin(list);
     std::advance(middle, (size >> 1));
 
     /**

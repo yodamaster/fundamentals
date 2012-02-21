@@ -4,27 +4,31 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
+#include <glynos/algorithms/parallel/merge_sort.hpp>
+#include <vector>
+#include <functional>
+#include <iostream>
+#include <chrono>
+#include <limits>
+#include <cmath>
 #include <boost/range/algorithm.hpp>
 #include <boost/range/algorithm_ext.hpp>
-#include <boost/range/counting_range.hpp>
-#include <boost/range/adaptors.hpp>
-#include <vector>
-#include <string>
-#include <list>
-#include <functional>
-#include <thread>
-#include <iostream>
 
 
 int
 main(int argc, char *argv[]) {
-	std::vector<double> vec_dbl(100000000);
+	using glynos::algorithms::parallel::merge_sort;
+
+	auto less = [](double v1, double v2) { return v1 < v2; };
+
+	std::vector<double> vec_dbl(1000000);
 	boost::generate(vec_dbl, &std::rand);
-	boost::for_each(vec_dbl, [](double &arg){arg /= INT_MAX;});
+	boost::for_each(vec_dbl, [](double &arg){arg /= std::numeric_limits<int>::max();});
 
-
-	std::cout << vec_dbl.front() << std::endl;
-	std::cout << vec_dbl.back() << std::endl;
+	std::chrono::system_clock::time_point before = std::chrono::system_clock::now();
+    vec_dbl = merge_sort(vec_dbl, less);
+	std::cout << "merge_sort took "
+			  << ((std::chrono::system_clock::now() - before).count() / 1000) << " ms" << std::endl;
 
 	return 0;
 }

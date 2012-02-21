@@ -8,44 +8,29 @@
 
 #include <glynos/algorithms/merge_sort.hpp>
 #include <vector>
-#include <string>
 #include <functional>
-#include <boost/range/algorithm.hpp>
 #include <iostream>
+#include <chrono>
+#include <limits>
+#include <cmath>
+#include <boost/range/algorithm.hpp>
+#include <boost/range/algorithm_ext.hpp>
 
 
 int
 main(int argc, char *argv[]) {
-    std::vector<std::string> teams{
-        "Manchester City",
-        "Manchester United",
-        "Tottenham Hotspurs",
-        "Arsenal",
-        "Chelsea",
-        "Newcastle United",
-        "Liverpool",
-        "Norwich City",
-        "Sunderland",
-        "Everton",
-        "Swansea City",
-        "Fulham",
-        "Stoke City",
-        "West Bromwich Albion",
-        "Aston Villa",
-        "Queens Park Rangers",
-        "Blackburn Rovers",
-        "Wolverhampton Wanderers",
-        "Bolton Wanderers",
-        "Wigan",
-    };
+	using glynos::algorithms::merge_sort;
 
-    boost::for_each(teams, [](const std::string &team) { std::cout << team << ", "; });
-    std::cout << std::endl;
-    std::vector<std::string> sorted_teams =
-        glynos::algorithms::merge_sort(teams,
-            [](const std::string &team1, const std::string &team2) { return team1 < team2; });
-    boost::for_each(sorted_teams, [](const std::string &team) { std::cout << team << ", "; });
-    std::cout << std::endl;
+	auto less = [](double v1, double v2) { return v1 < v2; };
+
+	std::vector<double> vec_dbl(1000000);
+	boost::generate(vec_dbl, &std::rand);
+	boost::for_each(vec_dbl, [](double &arg){arg /= std::numeric_limits<int>::max();});
+
+	std::chrono::system_clock::time_point before = std::chrono::system_clock::now();
+    vec_dbl = merge_sort(vec_dbl, less);
+	std::cout << "merge_sort took "
+			  << ((std::chrono::system_clock::now() - before).count() / 1000) << " ms" << std::endl;
 
     return 0;
 }

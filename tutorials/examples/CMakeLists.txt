@@ -10,5 +10,5 @@ set(EXAMPLES
 
 foreach(example ${EXAMPLES})
   add_executable(tutorials-${example} ${example}.cpp)
-  target_link_libraries(tutorials-${example} ${Boost_REGEX_LIBRARY})
+  target_link_libraries(tutorials-${example} ${Boost_REGEX_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 endforeach(example)

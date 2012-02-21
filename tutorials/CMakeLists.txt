@@ -10,6 +10,7 @@ if (Boost_FOUND)
 else()
   message(FATAL_ERROR " Unable to locate Boost.")
 endif()
+find_package(Threads)
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
   set(CMAKE_CXX_FLAGS "-std=c++0x -g")
