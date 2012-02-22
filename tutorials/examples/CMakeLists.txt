@@ -2,10 +2,14 @@ set(EXAMPLES
   boost_range_algorithm
   merge_sort
   quick_sort
+  merge_sort_test
+  quick_sort_test
   parallel_for_each
   parallel_count
   parallel_count_if
+  parallel_find
   parallel_merge_sort
+  parallel_merge_sort_test
   async_test
   bloom_filter
   )

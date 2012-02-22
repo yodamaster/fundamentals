@@ -19,7 +19,7 @@ template <
     class List,
     class Pred
     >
-List merge(const List &left, const List &right, Pred pred) {
+List merge(const List &left, const List &right, const Pred &pred) {
     List result;
 	std::merge(std::begin(left), std::end(left),
 			   std::begin(right), std::end(right),

@@ -8,13 +8,10 @@
 # define __GLYNOS_ALGORITHMS_PARALLEL_MERGE_SORT_INC__
 
 
-# include <boost/thread/thread.hpp>
-# include <boost/thread/condition_variable.hpp>
-# include <boost/thread/future.hpp>
-# include <boost/iterator/iterator_traits.hpp>
-# include <boost/shared_ptr.hpp>
 # include <glynos/algorithms/merge_sort.hpp>
-
+# include <thread>
+# include <future>
+# include <vector>
 
 namespace glynos {
 namespace algorithms {
@@ -24,7 +21,38 @@ template <
     class Pred
     >
 List merge_sort(const List &list, const Pred &pred) {
-	return glynos::algorithms::merge_sort(list, pred);
+	auto length = list.size();
+    if (length != 0) {
+        /**
+         * First work out how many blocks to divide the sequence
+         * into.
+         */
+        decltype(length) min_per_thread = 25;
+        decltype(length) max_threads = length + (min_per_thread - 1) / min_per_thread;
+        decltype(length) hardware_threads = std::thread::hardware_concurrency();
+        decltype(length) num_threads = std::min(hardware_threads != 0? hardware_threads : 2, max_threads);
+        decltype(length) block_size = length / num_threads;
+
+        /**
+         * Subdivide the for_each algorithm into `num_threads` tasks.
+         */
+        std::vector<std::thread> threads(num_threads - 1);
+
+		/**
+		 * Find the middle of the sequence.
+		 */
+		auto middle = std::begin(list);
+		std::advance(middle, (length >> 1));
+
+		std::future<List> l1 = std::async(std::launch::async,
+		    [](const List &list, const Pred &pred) {
+			    return glynos::algorithms::merge_sort(list, pred);
+										  }, List(std::begin(list), middle), pred);
+
+		List l2 = glynos::algorithms::merge_sort(List(middle, std::end(list)), pred);
+		return details::merge(l1.get(), l2, pred);
+    }
+    return list;
 }
 } // namespace parallel
 } // namespace algorithms

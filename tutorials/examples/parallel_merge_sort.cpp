@@ -18,14 +18,11 @@ main(int argc, char *argv[]) {
 	using std::chrono::system_clock;
 	using glynos::algorithms::parallel::merge_sort;
 
-	auto less = [](double v1, double v2) { return v1 < v2; };
-
-	std::vector<double> vec_dbl(1000000);
-	boost::generate(vec_dbl, &std::rand);
-	boost::for_each(vec_dbl, [](double &arg){arg /= std::numeric_limits<int>::max();});
+    std::vector<int> vec_int(1000000);
+	boost::generate(vec_int, &std::rand);
 
 	system_clock::time_point before = system_clock::now();
-    vec_dbl = merge_sort(vec_dbl, less);
+    vec_int = merge_sort(vec_int, std::less<int>());
 	std::cout << "merge_sort took "
 			  << ((system_clock::now() - before).count() / 1000) << " ms" << std::endl;
 

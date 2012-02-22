@@ -34,7 +34,7 @@ F for_each(I first, I last, F f) {
         /**
          * Subdivide the for_each algorithm into `num_threads` tasks.
          */
-		std::vector<std::thread> threads(num_threads - 1);
+        std::vector<std::thread> threads(num_threads - 1);
 
         auto block_begin = first;
         for (auto &thread : threads) {

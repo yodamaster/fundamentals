@@ -4,7 +4,7 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#include <glynos/algorithms/quick_sort.hpp>
+#include <glynos/algorithms/parallel/merge_sort.hpp>
 #include <vector>
 #include <string>
 #include <functional>
@@ -14,7 +14,7 @@
 
 int
 main(int argc, char *argv[]) {
-	using glynos::algorithms::quick_sort;
+	using glynos::algorithms::parallel::merge_sort;
 
     std::vector<std::string> teams{
         "Manchester City",
@@ -41,7 +41,7 @@ main(int argc, char *argv[]) {
 
     boost::for_each(teams, [](const std::string &team) { std::cout << team << ", "; });
     std::cout << std::endl;
-	quick_sort(teams, std::less<std::string>());
+	teams = merge_sort(teams, std::less<std::string>());
     boost::for_each(teams, [](const std::string &team) { std::cout << team << ", "; });
     std::cout << std::endl;
 
