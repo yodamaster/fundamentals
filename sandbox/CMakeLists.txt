@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 2.8)
+project(tutorials)
+include_directories(${tutorials_SOURCE_DIR}/include)
+
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTI_THREADED ON)
+find_package(Boost 1.50.0 REQUIRED unit_test_framework regex system chrono locale timer)
+if (Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+else()
+  message(FATAL_ERROR " Unable to locate Boost.")
+endif()
+find_package(Threads)
+
+if (${CMAKE_CXX_COMPILER_ID} MATCHES GNU)
+  set(CMAKE_CXX_FLAGS "-std=c++0x -g")
+endif()
+add_definitions(-DBOOST_CHRONO_INLINED)
+
+add_subdirectory(examples)
