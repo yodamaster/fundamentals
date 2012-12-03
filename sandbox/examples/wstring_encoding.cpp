@@ -10,7 +10,8 @@ main(int argc, char *argv[]) {
 	std::locale::global(gen(""));
 	try {
 		std::wstring grussen = L"grüßEN!";
-		std::wcout << boost::algorithm::to_upper_copy(grussen) << " " << boost::locale::to_upper(grussen) << std::endl;
+		std::wcout << boost::algorithm::to_upper_copy(grussen) << " "
+				   << boost::locale::to_upper(grussen) << std::endl;
 	}
 	catch (std::exception &e) {
 		std::cout << e.what() << std::endl;

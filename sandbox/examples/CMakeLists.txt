@@ -1,4 +1,5 @@
 set(EXAMPLES
+  codecvt_test
   wstring_encoding
   )
 

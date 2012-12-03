@@ -42,7 +42,7 @@ std::ptrdiff_t count(I first, I last, const T &value) {
         for (auto &future : futures) {
             auto block_end = block_begin;
             std::advance(block_end, block_size);
-            future = std::move(std::async(std::launch::async, std::count<I, T>, block_begin, block_end, value));
+            future = std::std::async(std::launch::async, std::count<I, T>, block_begin, block_end, value);
             block_begin = block_end;
         }
 
