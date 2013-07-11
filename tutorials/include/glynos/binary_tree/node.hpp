@@ -16,45 +16,45 @@
 
 
 namespace glynos {
-template <
+  template <
     class Key,
     class Value,
     class Compare
     >
-class binary_tree_node
+  class binary_tree_node
     : public std::enable_shared_from_this<binary_tree_node<Key, Value, Compare> > {
 
-public:
+  public:
 
     binary_tree_node(const Key &key, const Value &value, const Compare &compare)
-        : compare(compare),
-          key(new Key(key)),
-          value(new Value(value)) {
+      : compare(compare),
+	key(new Key(key)),
+	value(new Value(value)) {
 
     }
 
     binary_tree_node(const binary_tree_node &other) {
-        // queue<std::shared_ptr<binary_tree_node> > nodes;
-        // nodes.push(other.shared_from_this());
-        // while (!nodes.empty()) {
-        //     std::shared_ptr<binary_tree_node> node = nodes.head();
-        //     nodes.pop();
-        //
-        //     // ...
-        //     // insert?
-        //
-        //     if (node->left) {
-        //         nodes.push(node->left);
-        //     }
-        //     if (node->right) {
-        //         nodes.push(node->right);
-        //     }
-        // }
+      // queue<std::shared_ptr<binary_tree_node> > nodes;
+      // nodes.push(other.shared_from_this());
+      // while (!nodes.empty()) {
+      //     std::shared_ptr<binary_tree_node> node = nodes.head();
+      //     nodes.pop();
+      //
+      //     // ...
+      //     // insert?
+      //
+      //     if (node->left) {
+      //         nodes.push(node->left);
+      //     }
+      //     if (node->right) {
+      //         nodes.push(node->right);
+      //     }
+      // }
     }
 
     binary_tree_node &operator = (const binary_tree_node &other) {
-        binary_tree_node(other).swap(*this);
-        return *this;
+      binary_tree_node(other).swap(*this);
+      return *this;
     }
 
     ~binary_tree_node() {
@@ -62,184 +62,184 @@ public:
     }
 
     void insert(std::shared_ptr<binary_tree_node> node) {
-		std::shared_ptr<binary_tree_node> x = this->shared_from_this(), y;
-        while (x) {
-            y = x;
-            if (compare(*node->key, *x->key)) {
-                x = x->left;
-            }
-            else {
-                x = x->right;
-            }
-        }
+      std::shared_ptr<binary_tree_node> x = this->shared_from_this(), y;
+      while (x) {
+	y = x;
+	if (compare(*node->key, *x->key)) {
+	  x = x->left;
+	}
+	else {
+	  x = x->right;
+	}
+      }
 
-        node->parent = y;
-        if (y) {
-            if (compare(*node->key, *y->key)) {
-                y->left = node;
-            }
-            else {
-                y->right = node;
-            }
-        }
+      node->parent = y;
+      if (y) {
+	if (compare(*node->key, *y->key)) {
+	  y->left = node;
+	}
+	else {
+	  y->right = node;
+	}
+      }
     }
 
     std::shared_ptr<binary_tree_node> find(const Key &key) {
-        auto node = this->shared_from_this();
-        while (node && (key != *node->key)) {
-            if (compare(key, *node->key)) {
-                node = node->left;
-            }
-            else {
-                node = node->right;
-            }
-        }
-        return node;
+      auto node = this->shared_from_this();
+      while (node && (key != *node->key)) {
+	if (compare(key, *node->key)) {
+	  node = node->left;
+	}
+	else {
+	  node = node->right;
+	}
+      }
+      return node;
     }
 
     std::shared_ptr<binary_tree_node> minimum() {
-        auto node = this->shared_from_this();
-        while (node->left) {
-            node = node->left;
-        }
-        return node;
+      auto node = this->shared_from_this();
+      while (node->left) {
+	node = node->left;
+      }
+      return node;
     }
 
     std::shared_ptr<binary_tree_node> maximum() {
-        auto node = this->shared_from_this();
-        while (node->right) {
-            node = node->right;
-        }
-        return node;
+      auto node = this->shared_from_this();
+      while (node->right) {
+	node = node->right;
+      }
+      return node;
     }
 
     template <
-        class Func
-        >
+      class Func
+      >
     void preorder_walk(const Func &func) {
-        // todo - make this non-recursive
-        func(*key, *value);
-        if (left) {
-            left->preorder_walk(func);
-        }
-        if (right) {
-            right->preorder_walk(func);
-        }
+      // todo - make this non-recursive
+      func(*key, *value);
+      if (left) {
+	left->preorder_walk(func);
+      }
+      if (right) {
+	right->preorder_walk(func);
+      }
     }
 
     template <
-        class Func
-        >
+      class Func
+      >
     void inorder_walk_1(const Func &func) {
-        // this implementation doesn't use a stack, or recursion,
-        // but does modify the original structure.
-		std::shared_ptr<binary_tree_node> node = this->shared_from_this(), pre;
-        while (node) {
-            if (!node->left) {
-                func(*node->key, *node->value);
-                node = node->right;
-            }
-            else {
-                pre = node->left;
-                while (pre->right && (pre->right != node)) {
-                    pre = pre->right;
-                }
+      // this implementation doesn't use a stack, or recursion,
+      // but does modify the original structure.
+      std::shared_ptr<binary_tree_node> node = this->shared_from_this(), pre;
+      while (node) {
+	if (!node->left) {
+	  func(*node->key, *node->value);
+	  node = node->right;
+	}
+	else {
+	  pre = node->left;
+	  while (pre->right && (pre->right != node)) {
+	    pre = pre->right;
+	  }
 
-                if (!pre->right) {
-                    pre->right = node;
-                    node = node->left;
-                }
-                else {
-                    pre->right.reset();
-                    func(*node->key, *node->value);
-                    node = node->right;
-                }
-            }
-        }
+	  if (!pre->right) {
+	    pre->right = node;
+	    node = node->left;
+	  }
+	  else {
+	    pre->right.reset();
+	    func(*node->key, *node->value);
+	    node = node->right;
+	  }
+	}
+      }
     }
 
     template <
-        class Func
-        >
+      class Func
+      >
     void inorder_walk_2(const Func &func) {
-        // uses a stack, doesn't modify structure
-        stack<std::shared_ptr<binary_tree_node> > nodes;
-        auto node = this->shared_from_this();
+      // uses a stack, doesn't modify structure
+      stack<std::shared_ptr<binary_tree_node> > nodes;
+      auto node = this->shared_from_this();
 
-        while (true) {
-            if (node) {
-                nodes.push(node);
-                node = node->left;
-            }
-            else {
-                if (!nodes.empty()) {
-                    node = nodes.top();
-                    nodes.pop();
-                    func(*node->key, *node->value);
-                    node = node->right;
-                }
-                else {
-                    break;
-                }
-            }
-        }
+      while (true) {
+	if (node) {
+	  nodes.push(node);
+	  node = node->left;
+	}
+	else {
+	  if (!nodes.empty()) {
+	    node = nodes.top();
+	    nodes.pop();
+	    func(*node->key, *node->value);
+	    node = node->right;
+	  }
+	  else {
+	    break;
+	  }
+	}
+      }
     }
 
     template <
-        class Func
-        >
+      class Func
+      >
     void postorder_walk(const Func &func) {
-        // todo - make this non-recursive
-        if (left) {
-            left->postorder_walk(func);
-        }
-        if (right) {
-            right->postorder_walk(func);
-        }
-        func(*key, *value);
+      // todo - make this non-recursive
+      if (left) {
+	left->postorder_walk(func);
+      }
+      if (right) {
+	right->postorder_walk(func);
+      }
+      func(*key, *value);
     }
 
     template <
-        class Func
-        >
+      class Func
+      >
     void levelorder_walk(const Func &func) {
-        queue<std::shared_ptr<binary_tree_node> > nodes;
-        nodes.push(this->shared_from_this());
-        while (!nodes.empty()) {
-            auto node = nodes.head();
-            nodes.pop();
+      queue<std::shared_ptr<binary_tree_node> > nodes;
+      nodes.push(this->shared_from_this());
+      while (!nodes.empty()) {
+	auto node = nodes.head();
+	nodes.pop();
 
-            func(*node->key, *node->value);
-            if (node->left) {
-                nodes.push(node->left);
-            }
-            if (node->right) {
-                nodes.push(node->right);
-            }
-        }
+	func(*node->key, *node->value);
+	if (node->left) {
+	  nodes.push(node->left);
+	}
+	if (node->right) {
+	  nodes.push(node->right);
+	}
+      }
     }
 
     unsigned int count() const {
-        unsigned int count = 0;
-        queue<std::shared_ptr<const binary_tree_node> > nodes;
-        nodes.push(this->shared_from_this());
-        while (!nodes.empty()) {
-            auto node = nodes.head();
-            nodes.pop();
-            ++count;
-            if (node->left) {
-                nodes.push(node->left);
-            }
-            if (node->right) {
-                nodes.push(node->right);
-            }
-        }
-        return count;
+      unsigned int count = 0;
+      queue<std::shared_ptr<const binary_tree_node> > nodes;
+      nodes.push(this->shared_from_this());
+      while (!nodes.empty()) {
+	auto node = nodes.head();
+	nodes.pop();
+	++count;
+	if (node->left) {
+	  nodes.push(node->left);
+	}
+	if (node->right) {
+	  nodes.push(node->right);
+	}
+      }
+      return count;
     }
 
     unsigned int height() const {
-        return std::max((left? left->height() : 0U),
-                        (right? right->height() : 0U)) + 1;
+      return std::max((left? left->height() : 0U),
+		      (right? right->height() : 0U)) + 1;
     }
 
     std::shared_ptr<binary_tree_node> parent, left, right;
@@ -247,7 +247,7 @@ public:
     std::shared_ptr<const Key> key;
     std::shared_ptr<Value> value;
 
-};
+  };
 } // namespace glynos
 
 

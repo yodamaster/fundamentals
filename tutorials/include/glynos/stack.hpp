@@ -12,42 +12,42 @@
 
 
 namespace glynos {
-//
-// \class stack glynos.stack.hpp
-// \brief A simple stack implementation.
-//
-template <
+  //
+  // \class stack glynos.stack.hpp
+  // \brief A simple stack implementation.
+  //
+  template <
     class T
     >
-class stack {
+  class stack {
 
-public:
+  public:
 
     void push(const T &value) {
-        stack_.add_tail(value);
+      stack_.add_tail(value);
     }
 
     const T &top() const {
-        return stack_.tail();
+      return stack_.tail();
     }
 
     void pop() {
-        stack_.remove_tail();
+      stack_.remove_tail();
     }
 
     unsigned int count() const {
-        return stack_.count();
+      return stack_.count();
     }
 
     bool empty() const {
-        return stack_.empty();
+      return stack_.empty();
     }
 
-private:
+  private:
 
     list<T> stack_;
 
-};
+  };
 } // namespace glynos
 
 

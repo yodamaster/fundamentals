@@ -12,47 +12,47 @@
 
 
 namespace glynos {
-template <
+  template <
     class T
     >
-class push_to_front_queue {
+  class push_to_front_queue {
 
-public:
+  public:
 
-    void push(const T &value) {
-        queue_.add_tail(value);
+    void push(T value) {
+      queue_.add_tail(value);
     }
 
     const T &front() const {
-        assert(!empty());
-        return *queue_.head()->value.get();
+      assert(!empty());
+      return *queue_.head()->value.get();
     }
 
     template <
-        class Func
-        >
-    const T &push_to_front(const Func &func) const {
-        auto node = queue_.find(func);
-        if (node) {
-            queue_.remove(node);
-            queue_.add_head(node);
-        }
-        return front();
+      class Func
+      >
+    const T &push_to_front(Func func) const {
+      auto node = queue_.find(func);
+      if (node) {
+	queue_.remove(node);
+	queue_.add_head(node);
+      }
+      return front();
     }
 
     void pop() {
-        queue_.remove_head();
+      queue_.remove_head();
     }
 
     bool empty() const {
-        return queue_.empty();
+      return queue_.empty();
     }
 
-private:
+  private:
 
     list<T> queue_;
 
-};
+  };
 } // namespace glynos
 
 

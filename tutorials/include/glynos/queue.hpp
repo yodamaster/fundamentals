@@ -12,42 +12,42 @@
 
 
 namespace glynos {
-//
-// \class queue glynos/queue.hpp
-// \brief A simple queue implementation.
-//
-template <
+  //
+  // \class queue glynos/queue.hpp
+  // \brief A simple queue implementation.
+  //
+  template <
     class T
     >
-class queue {
+  class queue {
 
-public:
+  public:
 
-    void push(const T &value) {
-        queue_.add_tail(value);
+    void push(T value) {
+      queue_.add_tail(value);
     }
 
-    const T &head() const {
-        return queue_.head();
+    T head() const {
+      return queue_.head();
     }
 
     void pop() {
-        queue_.remove_head();
+      queue_.remove_head();
     }
 
     unsigned int count() const {
-        return queue_.count();
+      return queue_.count();
     }
 
     bool empty() const {
-        return queue_.empty();
+      return queue_.empty();
     }
 
-private:
+  private:
 
     list<T> queue_;
 
-};
+  };
 } // namespace glynos
 
 

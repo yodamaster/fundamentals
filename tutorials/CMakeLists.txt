@@ -19,5 +19,5 @@ endif()
 add_definitions(-DBOOST_CHRONO_INLINED)
 
 add_subdirectory(examples)
-#enable_testing()
-#add_subdirectory(tests)
+enable_testing()
+add_subdirectory(tests)

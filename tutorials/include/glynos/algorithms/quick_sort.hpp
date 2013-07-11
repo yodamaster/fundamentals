@@ -13,42 +13,42 @@
 
 
 namespace glynos {
-namespace algorithms {
-template <
-    class Iter,
-    class Pred
-    >
-void quick_sort(Iter first, Iter last, const Pred &pred) {
-    if (first != last) {
+  namespace algorithms {
+    template <
+      class Iter,
+      class Pred
+      >
+    void quick_sort(Iter first, Iter last, const Pred &pred) {
+      if (first != last) {
         Iter left = first, right = last;
         Iter pivot = left++;
 
         while(left != right) {
-            if(pred(*left, *pivot)) {
-                ++left;
-            }
-            else {
-                while((left != right) && pred(*pivot, *right)) {
-                    --right;
-                }
-                std::iter_swap(left, right);
-            }
+	  if(pred(*left, *pivot)) {
+	    ++left;
+	  }
+	  else {
+	    while((left != right) && pred(*pivot, *right)) {
+	      --right;
+	    }
+	    std::iter_swap(left, right);
+	  }
         }
 
         quick_sort(first, left, pred);
         quick_sort(right, last, pred);
+      }
     }
-}
 
 
-template <
-    class Seq,
-    class Pred
-    >
-void quick_sort(Seq &seq, const Pred &pred) {
-    quick_sort(std::begin(seq), std::end(seq), pred);
-}
-} // namespace algorithms
+    template <
+      class Seq,
+      class Pred
+      >
+    void quick_sort(Seq &seq, const Pred &pred) {
+      quick_sort(std::begin(seq), std::end(seq), pred);
+    }
+  } // namespace algorithms
 } // namespace glynos
 
 
