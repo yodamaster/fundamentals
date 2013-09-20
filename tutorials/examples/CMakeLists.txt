@@ -1,7 +1,7 @@
 set(EXAMPLES
   #boost_range_algorithm
-  #merge_sort
-  #quick_sort
+  merge_sort
+  quick_sort
   #merge_sort_test
   #quick_sort_test
   parallel_for_each

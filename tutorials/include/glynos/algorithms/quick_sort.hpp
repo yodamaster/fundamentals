@@ -24,7 +24,7 @@ namespace glynos {
         Iter pivot = left++;
 
         while(left != right) {
-	  if(pred(*left, *pivot)) {
+	  if (pred(*left, *pivot)) {
 	    ++left;
 	  }
 	  else {
