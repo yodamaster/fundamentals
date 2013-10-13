@@ -1,12 +1,13 @@
 set(EXAMPLES
   #codecvt_test
   wstring_encoding
-  endianness
+  #endianness
   resolver
   daytime_client
   daytime_server
   mergesort
   quicksort
+  url
   )
 
 foreach(example ${EXAMPLES})
@@ -41,10 +42,20 @@ target_link_libraries(sandbox-ThreadPool
   ${CMAKE_THREAD_LIBS_INIT}
   )
 
-include_directories(qtnetwork)
+#include_directories(qtnetwork ${CMAKE_CURRENT_BINARY_DIR})
+#qt5_wrap_ui(UI_HEADERS qtnetwork/authenticationdialog.ui)
+#add_executable(sandbox-qtnetwork-httpwindow
+#  ${UI_HEADERS}
+#  qtnetwork/httpwindow.h
+#  qtnetwork/httpwindow.cpp
+#  qtnetwork/main.cpp)
+
 add_executable(sandbox-qtnetwork-client
   qtnetwork/client.h
   qtnetwork/client.cpp
-  qtnetwork/main.cpp)
+  qtnetwork/main.cpp
+  )
 
-qt5_use_modules(sandbox-qtnetwork-client Core Widgets Network)
+qt5_use_modules(sandbox-qtnetwork-client Core Network)
+#qt5_use_modules(sandbox-qtnetwork-httpwindow Core Widgets Network)
+qt5_use_modules(sandbox-url Core)

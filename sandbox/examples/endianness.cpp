@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdint>
 #include <cassert>
+
+#if defined(_WIN32)
 #include <windows.h>
 
 int main(int argc, char* argv[]) {
@@ -23,3 +25,4 @@ int main(int argc, char* argv[]) {
     assert(0x0B0A == net_ushort);
   }
 }
+#endif // defined(_WIN32)

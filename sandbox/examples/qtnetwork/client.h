@@ -41,46 +41,28 @@
 #ifndef CLIENT_H
 #define CLIENT_H
 
-#include <QDialog>
-#include <QTcpSocket>
+#include <QtCore>
+#include <QtNetwork>
 
-class QComboBox;
-class QDialogButtonBox;
-class QLabel;
-class QLineEdit;
-class QPushButton;
-class QTcpSocket;
-class QNetworkSession;
-
-class Client : public QDialog
+class Client : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    Client(QWidget *parent = 0);
+  Client();
+  void startRequest(QUrl url);
 
 private slots:
-    void requestNewFortune();
-    void readFortune();
-    void displayError(QAbstractSocket::SocketError socketError);
-    void enableGetFortuneButton();
-    void sessionOpened();
+  void httpFinished();
+  void httpReadyRead();
 
 private:
-    QLabel *hostLabel;
-    QLabel *portLabel;
-    QComboBox *hostCombo;
-    QLineEdit *portLineEdit;
-    QLabel *statusLabel;
-    QPushButton *getFortuneButton;
-    QPushButton *quitButton;
-    QDialogButtonBox *buttonBox;
 
-    QTcpSocket *tcpSocket;
-    QString currentFortune;
-    quint16 blockSize;
+  QUrl url;
+  QNetworkAccessManager nam;
+  QNetworkReply *reply;
+  QFile *file;
 
-    QNetworkSession *networkSession;
 };
 
 #endif
