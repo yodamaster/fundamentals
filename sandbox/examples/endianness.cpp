@@ -25,4 +25,17 @@ int main(int argc, char* argv[]) {
     assert(0x0B0A == net_ushort);
   }
 }
+#else
+
+#include <netinet/in.h>
+
+int main(int argc, char *argv[]) {
+  {
+    uint32_t net_ulong = htonl(0xDEADBEEF);
+    std::cout << std::hex << net_ulong << std::endl;
+    assert(0xEFBEADDE == net_ulong);
+  }
+}
+
+
 #endif // defined(_WIN32)

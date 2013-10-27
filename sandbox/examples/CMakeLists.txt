@@ -1,7 +1,7 @@
 set(EXAMPLES
   #codecvt_test
   wstring_encoding
-  #endianness
+  endianness
   resolver
   daytime_client
   daytime_server
@@ -26,12 +26,3 @@ foreach(example ${EXAMPLES})
     ${CMAKE_THREAD_LIBS_INIT}
     )
 endforeach(example)
-
-#add_executable(sandbox-qtnetwork-client
-#  qtnetwork/client.h
-#  qtnetwork/client.cpp
-#  qtnetwork/main.cpp
-#  )
-#
-#qt5_use_modules(sandbox-qtnetwork-client Core Network)
-#qt5_use_modules(sandbox-qtnetwork-httpwindow Core Widgets Network)
