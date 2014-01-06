@@ -7,7 +7,8 @@ set(EXAMPLES
   daytime_server
   mergesort
   quicksort
-  url
+  graph
+  #dijkstra
   )
 
 foreach(example ${EXAMPLES})
