@@ -9,6 +9,8 @@ set(EXAMPLES
   quicksort
   graph
   #dijkstra
+  make_heap
+  binary_heap
   )
 
 foreach(example ${EXAMPLES})
@@ -59,4 +61,4 @@ add_executable(sandbox-qtnetwork-client
 
 qt5_use_modules(sandbox-qtnetwork-client Core Network)
 #qt5_use_modules(sandbox-qtnetwork-httpwindow Core Widgets Network)
-qt5_use_modules(sandbox-url Core)
+#qt5_use_modules(sandbox-url Core)
