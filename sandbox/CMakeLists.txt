@@ -12,11 +12,11 @@ else()
 endif()
 
 #set(CMAKE_PREFIX_PATH "c:\\Qt\\5.1.1\\msvc2012\\")
-set(CMAKE_PREFIX_PATH "/home/glyn/Qt/5.1.1/gcc/")
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Network REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-set(CMAKE_AUTOMOC ON)
+#set(CMAKE_PREFIX_PATH "/home/glyn/Qt/5.1.1/gcc/")
+#find_package(Qt5Core REQUIRED)
+#find_package(Qt5Network REQUIRED)
+#find_package(Qt5Widgets REQUIRED)
+#set(CMAKE_AUTOMOC ON)
 
 find_package(Threads)
 
