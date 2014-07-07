@@ -26,25 +26,6 @@ foreach(example ${EXAMPLES})
     )
 endforeach(example)
 
-include_directories(.)
-include_directories(TinyThread/include)
-include_directories(TinyThread/include/TinyThread)
-add_executable(sandbox-ThreadPool
-  TinyThread/source/Timer.cpp
-  TinyThread/source/Tinythread.cpp
-  TinyThread/include/TinyThread/Fast_mutex.h
-  TinyThread/include/TinyThread/Timer.h
-  TinyThread/include/TinyThread/Tinythread.h
-  SK/Concurrency/Task.h
-  SK/Concurrency/ThreadSafeQueue.h
-  SK/Concurrency/WorkStealingQueue.h
-  SK/Concurrency/ThreadPool.h
-  SK/Concurrency/WorkStealingThreadPool.h
-  SK/ThreadPoolTest.cpp)
-target_link_libraries(sandbox-ThreadPool
-  ${CMAKE_THREAD_LIBS_INIT}
-  )
-
 #add_executable(sandbox-qtnetwork-client
 #  qtnetwork/client.h
 #  qtnetwork/client.cpp

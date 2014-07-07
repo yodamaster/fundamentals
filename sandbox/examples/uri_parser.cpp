@@ -103,7 +103,12 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
 
       if (hierarchical_part_state::slash_2 == hp_state) {
         begin = it;
-        hp_state = hierarchical_part_state::authority;
+        if (*it == '/') {
+          hp_state = hierarchical_part_state::path;
+        }
+        else {
+          hp_state = hierarchical_part_state::authority;
+        }
       }
 
       if (hierarchical_part_state::authority == hp_state) {
@@ -116,6 +121,12 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
           if (*it == '@') {
             parts.user_info = std::string(begin, it);
             auth_state = authority_state::at;
+            continue;
+          }
+          else if (*it == ':') {
+            // this is actually a host part, not a user_info
+            parts.host = std::string(begin, it);
+            auth_state = authority_state::colon;
             continue;
           }
           else if (*it == '/') {
@@ -279,8 +290,10 @@ int main(int argc, char* argv[]) {
   sandbox::parse_uri("ftp://user_info@example.com/path/?query#fragment");
   sandbox::parse_uri("http://example.com");
   sandbox::parse_uri("http://example.com/");
+  sandbox::parse_uri("http://example.com:8000/");
   sandbox::parse_uri("http://example.com/?query");
   sandbox::parse_uri("http://example.com/#fragment");
   sandbox::parse_uri("mailto:user_info@example.com?query#fragment");
+  sandbox::parse_uri("file:///home/example/.bashrc");
   return 0;
 }
