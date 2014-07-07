@@ -136,6 +136,20 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::path;
           }
+          else if (*it == '?') {
+            parts.host = std::string(begin, it);
+            auth_state = authority_state::finish;
+            hp_state = hierarchical_part_state::finish;
+            state = uri_parser_state::question_mark;
+            continue;
+          }
+          else if (*it == '#') {
+            parts.host = std::string(begin, it);
+            auth_state = authority_state::finish;
+            hp_state = hierarchical_part_state::finish;
+            state = uri_parser_state::hash;
+            continue;
+          }
         }
 
         if (authority_state::at == auth_state) {
@@ -241,21 +255,24 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
   }
 
   if (uri_parser_state::start == state) {
+    // The URI is empty, but still valid.
     state = uri_parser_state::finish;
+    hp_state = hierarchical_part_state::finish;
+    auth_state = authority_state::finish;
   }
   else if (uri_parser_state::hierarchical_part == state) {
-     if (hierarchical_part_state::authority == hp_state) {
-       if ((authority_state::user_info == auth_state) ||
-		   (authority_state::host == auth_state)) {
+    if (hierarchical_part_state::authority == hp_state) {
+      // this might be a host part, not a user_info
+      if ((authority_state::user_info == auth_state) ||
+          (authority_state::host == auth_state)) {
          parts.host = std::string(begin, it);
          auth_state = authority_state::finish;
-       }
-       hp_state = hierarchical_part_state::finish;
-     }
-     else if (hierarchical_part_state::path == hp_state) {
-       parts.path = std::string(begin, it);
-       hp_state = hierarchical_part_state::finish;
-     }
+      }
+    }
+    else if (hierarchical_part_state::path == hp_state) {
+      parts.path = std::string(begin, it);
+      hp_state = hierarchical_part_state::finish;
+    }
     state = uri_parser_state::finish;
   }
   else if (uri_parser_state::query == state) {
@@ -295,5 +312,10 @@ int main(int argc, char* argv[]) {
   sandbox::parse_uri("http://example.com/#fragment");
   sandbox::parse_uri("mailto:user_info@example.com?query#fragment");
   sandbox::parse_uri("file:///home/example/.bashrc");
+  sandbox::parse_uri("http://example.com?query");
+  sandbox::parse_uri("http://example.com#fragment");
+  sandbox::parse_uri("file:///home/example/.bashrc?query#fragment");
+  sandbox::parse_uri("file:///home/example/.bashrc?query");
+  sandbox::parse_uri("file:///home/example/.bashrc#fragment");
   return 0;
 }
