@@ -2,7 +2,7 @@
 #include <vector>
 #include <numeric>
 #include <iostream>
-
+#include <cassert>
 
 namespace sandbox {
 template <class T>
@@ -11,7 +11,7 @@ class binary_heap {
 public:
 
   typedef typename std::vector<T>::iterator iterator;
-
+  typedef typename std::vector<T>::const_iterator const_iterator;
 
   template <class Range>
   binary_heap(const Range &list)
@@ -30,12 +30,13 @@ public:
   }
 
   void pop() {
+    assert(!heap_.empty());
     percolate_down();
     heap_.pop_back();
   }
 
-  iterator begin() { return heap_.begin(); }
-  iterator end() { return heap_.end(); }
+  const_iterator begin() const { return heap_.begin(); }
+  const_iterator end() const { return heap_.end(); }
 
   void build() {
     std::make_heap(std::begin(heap_), std::end(heap_));
@@ -58,7 +59,7 @@ private:
 
 
 template <class Range>
-void print_range(Range &range) {
+void print_range(const Range &range) {
   std::cout << "[";
   std::for_each(std::begin(range), std::end(range), [] (int value) {
       std::cout << value << ", ";

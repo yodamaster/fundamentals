@@ -8,9 +8,9 @@ set(EXAMPLES
   mergesort
   quicksort
   graph
-  #dijkstra
   make_heap
   binary_heap
+  uri_parser
   )
 
 foreach(example ${EXAMPLES})
