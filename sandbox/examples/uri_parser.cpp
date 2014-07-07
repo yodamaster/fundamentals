@@ -4,8 +4,6 @@
 #include <utility>
 #include <algorithm>
 #include <iterator>
-#include <boost/utility/string_ref.hpp>
-#include <boost/optional.hpp>
 #include <iostream>
 
 namespace sandbox {
@@ -44,8 +42,9 @@ enum class authority_state {
   finish,
 };
 
-template <class Iterator>
-std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& parts) {
+template <class InputIterator, class OutputIterator>
+bool uri_parse(InputIterator first, InputIterator last, OutputIterator &out,
+               uri_parts& parts) {
   parts.scheme.clear();
   parts.user_info.clear();
   parts.host.clear();
@@ -54,11 +53,11 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
   parts.query.clear();
   parts.fragment.clear();
 
-  uri_parser_state state = uri_parser_state::start;
-  hierarchical_part_state hp_state = hierarchical_part_state::start;
-  authority_state auth_state = authority_state::start;
+  auto state = uri_parser_state::start;
+  auto hp_state = hierarchical_part_state::start;
+  auto auth_state = authority_state::start;
 
-  auto begin = first;
+  out = first;
   auto it = first;
   for (; it != last; ++it) {
     if (uri_parser_state::start == state) {
@@ -67,13 +66,13 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
 
     if (uri_parser_state::scheme == state) {
       if (*it == ':') {
-        parts.scheme = std::string(begin, it);
+        parts.scheme = std::string(out, it);
         state = uri_parser_state::colon;
       }
     }
 
     if (uri_parser_state::colon == state) {
-      begin = it;
+      out = it;
       state = uri_parser_state::hierarchical_part;
       continue;
     }
@@ -85,7 +84,7 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
           continue;
         }
         else {
-          begin = it;
+          out = it;
           hp_state = hierarchical_part_state::path;
           continue;
         }
@@ -97,12 +96,12 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
           continue;
         }
         else {
-          return it;
+          return false;
         }
       }
 
       if (hierarchical_part_state::slash_2 == hp_state) {
-        begin = it;
+        out = it;
         if (*it == '/') {
           hp_state = hierarchical_part_state::path;
         }
@@ -119,32 +118,32 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
 
         if (authority_state::user_info == auth_state) {
           if (*it == '@') {
-            parts.user_info = std::string(begin, it);
+            parts.user_info = std::string(out, it);
             auth_state = authority_state::at;
             continue;
           }
           else if (*it == ':') {
             // this is actually a host part, not a user_info
-            parts.host = std::string(begin, it);
+            parts.host = std::string(out, it);
             auth_state = authority_state::colon;
             continue;
           }
           else if (*it == '/') {
             // this is actually a host part, not a user_info
-            parts.host = std::string(begin, it);
-            begin = it;
+            parts.host = std::string(out, it);
+            out = it;
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::path;
           }
           else if (*it == '?') {
-            parts.host = std::string(begin, it);
+            parts.host = std::string(out, it);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::question_mark;
             continue;
           }
           else if (*it == '#') {
-            parts.host = std::string(begin, it);
+            parts.host = std::string(out, it);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::hash;
@@ -153,47 +152,47 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
         }
 
         if (authority_state::at == auth_state) {
-          begin = it;
+          out = it;
           auth_state = authority_state::host;
           continue;
         }
 
         if (authority_state::host == auth_state) {
           if (*it == ':') {
-            parts.host = std::string(begin, it);
+            parts.host = std::string(out, it);
             auth_state = authority_state::colon;
             continue;
           }
           if (*it == '/') {
-            parts.host = std::string(begin, it);
-            begin = it;
+            parts.host = std::string(out, it);
+            out = it;
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::path;
           }
         }
 
         if (authority_state::colon == auth_state) {
-          begin = it;
+          out = it;
           auth_state = authority_state::port;
           continue;
         }
 
         if (authority_state::port == auth_state) {
           if (*it == '/') {
-            parts.port = std::string(begin, it);
-            begin = it;
+            parts.port = std::string(out, it);
+            out = it;
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::path;
           }
           else if (*it == '?') {
-            parts.port = std::string(begin, it);
+            parts.port = std::string(out, it);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::question_mark;
             continue;
           }
           else if (*it == '#') {
-            parts.port = std::string(begin, it);
+            parts.port = std::string(out, it);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::hash;
@@ -204,13 +203,13 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
 
       if (hierarchical_part_state::path == hp_state) {
         if (*it == '?') {
-          parts.path = std::string(begin, it);
+          parts.path = std::string(out, it);
           hp_state = hierarchical_part_state::finish;
           state = uri_parser_state::question_mark;
           continue;
         }
         else if (*it == '#') {
-          parts.path = std::string(begin, it);
+          parts.path = std::string(out, it);
           hp_state = hierarchical_part_state::finish;
           state = uri_parser_state::hash;
           continue;
@@ -219,13 +218,13 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
 
       if (hierarchical_part_state::finish == hp_state) {
         if (*it == '?') {
-          parts.path = std::string(begin, it);
+          parts.path = std::string(out, it);
           hp_state = hierarchical_part_state::finish;
           state = uri_parser_state::question_mark;
           continue;
         }
         else if (*it == '#') {
-          parts.path = std::string(begin, it);
+          parts.path = std::string(out, it);
           hp_state = hierarchical_part_state::finish;
           state = uri_parser_state::hash;
           continue;
@@ -234,21 +233,21 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
     }
 
     if (uri_parser_state::question_mark == state) {
-      begin = it;
+      out = it;
       state = uri_parser_state::query;
       continue;
     }
 
     if (uri_parser_state::query == state) {
       if (*it == '#') {
-        parts.query = std::string(begin, it);
+        parts.query = std::string(out, it);
         state = uri_parser_state::hash;
         continue;
       }
     }
 
     if (uri_parser_state::hash == state) {
-      begin = it;
+      out = it;
       state = uri_parser_state::fragment;
       continue;
     }
@@ -260,45 +259,65 @@ std::string::const_iterator uri_parse(Iterator first, Iterator last, uri_parts& 
     hp_state = hierarchical_part_state::finish;
     auth_state = authority_state::finish;
   }
+  else if ((uri_parser_state::scheme == state) ||
+           (uri_parser_state::colon == state)) {
+    out = it;
+    return false;
+  }
   else if (uri_parser_state::hierarchical_part == state) {
-    if (hierarchical_part_state::authority == hp_state) {
+    if ((hierarchical_part_state::start == hp_state) ||
+        (hierarchical_part_state::slash_1 == hp_state) ||
+        (hierarchical_part_state::slash_2 == hp_state)) {
+      out = it;
+      return false;
+    }
+    else if (hierarchical_part_state::authority == hp_state) {
       // this might be a host part, not a user_info
       if ((authority_state::user_info == auth_state) ||
           (authority_state::host == auth_state)) {
-         parts.host = std::string(begin, it);
-         auth_state = authority_state::finish;
+        parts.host = std::string(out, it);
+        auth_state = authority_state::finish;
       }
     }
     else if (hierarchical_part_state::path == hp_state) {
-      parts.path = std::string(begin, it);
+      parts.path = std::string(out, it);
       hp_state = hierarchical_part_state::finish;
     }
     state = uri_parser_state::finish;
   }
   else if (uri_parser_state::query == state) {
-    parts.query = std::string(begin, it);
+    parts.query = std::string(out, it);
     state = uri_parser_state::finish;
   }
   else if (uri_parser_state::fragment == state) {
-    parts.fragment = std::string(begin, it);
+    parts.fragment = std::string(out, it);
     state = uri_parser_state::finish;
   }
 
-  return it;
+  return true;
 }
 
 void parse_uri(const std::string &uri) {
   sandbox::uri_parts parts;
-  if (sandbox::uri_parse(std::begin(uri), std::end(uri), parts) == std::end(uri)) {
-    std::cout << parts.scheme << std::endl;
-    std::cout << parts.user_info << std::endl;
-    std::cout << parts.host << std::endl;
-    std::cout << parts.port << std::endl;
-    std::cout << parts.path << std::endl;
-    std::cout << parts.query << std::endl;
-    std::cout << parts.fragment << std::endl;
-    std::cout << "-------------------------------------------" << std::endl;
+  std::string::const_iterator it;
+  if (sandbox::uri_parse(std::begin(uri), std::end(uri), it, parts)) {
+    std::cout << "'" << uri << "' is a valid URI." << std::endl;
+    std::cout << " " << parts.scheme << std::endl;
+    std::cout << " " << parts.user_info << std::endl;
+    std::cout << " " << parts.host << std::endl;
+    std::cout << " " << parts.port << std::endl;
+    std::cout << " " << parts.path << std::endl;
+    std::cout << " " << parts.query << std::endl;
+    std::cout << " " << parts.fragment << std::endl;
   }
+  else {
+    std::cout << "'" << uri << "' is an invalid URI." << std::endl;
+    std::copy(std::begin(uri), it, std::ostream_iterator<char>(std::cout));
+    std::cout << "*";
+    std::copy(it, std::end(uri), std::ostream_iterator<char>(std::cout));
+    std::cout << std::endl;
+  }
+  std::cout << "-------------------------------------------" << std::endl;
 }
 } // namespace sandbox
 
@@ -317,5 +336,9 @@ int main(int argc, char* argv[]) {
   sandbox::parse_uri("file:///home/example/.bashrc?query#fragment");
   sandbox::parse_uri("file:///home/example/.bashrc?query");
   sandbox::parse_uri("file:///home/example/.bashrc#fragment");
+  sandbox::parse_uri("");
+
+  sandbox::parse_uri("scheme");
+  sandbox::parse_uri("scheme:");
   return 0;
 }
