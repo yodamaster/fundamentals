@@ -4,11 +4,61 @@
 #include <utility>
 #include <algorithm>
 #include <iterator>
+#include <cctype>
 #include <boost/utility/string_ref.hpp>
 #include <boost/optional.hpp>
 #include <iostream>
 
 namespace sandbox {
+namespace {
+inline
+bool is_gen_delim(char value) {
+  static const std::string delims(":/?#[]@");
+  return std::string::npos != delims.find(value);
+}
+
+inline
+bool is_sub_delim(char value) {
+  static const std::string delims("!$&'()*+,;=");
+  return std::string::npos != delims.find(value);
+}
+
+inline
+bool is_reserved(char value) {
+  return is_gen_delim(value) || is_sub_delim(value);
+}
+
+inline
+bool is_unreserved(char value) {
+  static const std::string unreserved("-._~");
+  return
+    (std::isalnum(value) != 0) ||
+    (std::string::npos != unreserved.find(value));
+}
+
+inline
+bool is_pct_encoded(const char* str, std::size_t length) {
+  if (length == 3) {
+    return
+      (str[0] == '%') &&
+      (std::isxdigit(str[1]) != 0) &&
+      (std::isxdigit(str[2]) != 0)
+      ;
+  }
+  return false;
+}
+
+inline
+bool is_pchar(const char *str, std::size_t length) {
+  return
+    is_pct_encoded(str, length) ||
+    ((length == 0) &&
+     (is_unreserved(*str) || is_sub_delim(*str) || (*str == ':') || (*str == '@')))
+    ;
+
+}
+} // namespace
+
 typedef boost::optional<boost::string_ref> uri_part;
 
 struct uri_parts {
@@ -18,10 +68,9 @@ struct uri_parts {
 inline
 std::ostream& operator << (std::ostream& os, const uri_part& part) {
   if (part) {
+    os << "'";
     std::copy(part->begin(), part->end(), std::ostream_iterator<char>(os));
-  }
-  else {
-    os << "XXXXX";
+    os << "'";
   }
   return os;
 }
@@ -79,7 +128,6 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
 
     if (uri_parser_state::scheme == state) {
       if (input[i] == ':') {
-        // parts.scheme = std::string(out, it);
         parts.scheme = boost::string_ref(&input[parsed_until], i - parsed_until);
         state = uri_parser_state::colon;
       }
@@ -219,6 +267,10 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::hash;
             continue;
+          }
+          else if (std::isdigit(input[i]) == 0) {
+            std::cout << input[i] << std::endl;
+            return false;
           }
         }
       }
@@ -362,6 +414,14 @@ int main(int argc, char* argv[]) {
   sandbox::parse_uri("file:///home/example/.bashrc?query#fragment");
   sandbox::parse_uri("file:///home/example/.bashrc?query");
   sandbox::parse_uri("file:///home/example/.bashrc#fragment");
+  sandbox::parse_uri("ftp://ftp.is.co.za/rfc/rfc1808.txt");
+  sandbox::parse_uri("http://www.ietf.org/rfc/rfc2396.txt");
+  sandbox::parse_uri("ldap://[2001:db8::7]/c=GB?objectClass?one");
+  sandbox::parse_uri("mailto:John.Doe@example.com");
+  sandbox::parse_uri("news:comp.infosystems.www.servers.unix");
+  sandbox::parse_uri("tel:+1-816-555-1212");
+  sandbox::parse_uri("telnet://192.0.2.16:80/");
+  sandbox::parse_uri("urn:oasis:names:specification:docbook:dtd:xml:4.1.2");
   sandbox::parse_uri("");
 
   sandbox::parse_uri("scheme");
