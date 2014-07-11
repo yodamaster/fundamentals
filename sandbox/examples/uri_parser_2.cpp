@@ -20,6 +20,9 @@ std::ostream& operator << (std::ostream& os, const uri_part& part) {
   if (part) {
     std::copy(part->begin(), part->end(), std::ostream_iterator<char>(os));
   }
+  else {
+    os << "XXXXX";
+  }
   return os;
 }
 
@@ -148,6 +151,8 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
           }
           else if (input[i] == '?') {
             parts.host = boost::string_ref(&input[parsed_until], i - parsed_until);
+            // path can be empty, but must be present
+            parts.path = boost::string_ref(&input[i], 0);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::question_mark;
@@ -155,6 +160,8 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
           }
           else if (input[i] == '#') {
             parts.host = boost::string_ref(&input[parsed_until], i - parsed_until);
+            // path can be empty, but must be present
+            parts.path = boost::string_ref(&input[i], 0);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::hash;
@@ -197,6 +204,8 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
           }
           else if (input[i] == '?') {
             parts.port = boost::string_ref(&input[parsed_until], i - parsed_until);
+            // path can be empty, but must be present
+            parts.path = boost::string_ref(&input[i], 0);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::question_mark;
@@ -204,6 +213,8 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
           }
           else if (input[i] == '#') {
             parts.port = boost::string_ref(&input[parsed_until], i - parsed_until);
+            // path can be empty, but must be present
+            parts.path = boost::string_ref(&input[i], 0);
             auth_state = authority_state::finish;
             hp_state = hierarchical_part_state::finish;
             state = uri_parser_state::hash;
@@ -289,6 +300,8 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
         parts.host = boost::string_ref(&input[parsed_until], i - parsed_until);
         auth_state = authority_state::finish;
       }
+      // path can be empty, but must be present
+      parts.path = boost::string_ref(&input[i], 0);
     }
     else if (hierarchical_part_state::path == hp_state) {
       parts.path = boost::string_ref(&input[parsed_until], i - parsed_until);
@@ -310,8 +323,8 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
 
 void parse_uri(const std::string &uri) {
   sandbox::uri_parts parts;
-  std::size_t distance = 0;
-  if (sandbox::uri_parse(uri.c_str(), uri.size(), distance, parts)) {
+  std::size_t parsed_until = 0;
+  if (sandbox::uri_parse(uri.c_str(), uri.size(), parsed_until, parts)) {
     std::cout << "'" << uri << "' is a valid URI." << std::endl;
     std::cout << " " << parts.scheme << std::endl;
     std::cout << " " << parts.user_info << std::endl;
@@ -323,10 +336,10 @@ void parse_uri(const std::string &uri) {
   }
   else {
     std::cout << "'" << uri << "' is an invalid URI." << std::endl;
-    //std::copy(std::begin(uri), it, std::ostream_iterator<char>(std::cout));
-    //std::cout << "*";
-    //std::copy(it, std::end(uri), std::ostream_iterator<char>(std::cout));
-    //std::cout << std::endl;
+    for (std::size_t i = 0; i < parsed_until; ++i) { std::cout << uri[i]; }
+    std::cout << "*";
+    for (std::size_t i = parsed_until; i < uri.size(); ++i) { std::cout << uri[i]; }
+    std::cout << std::endl;
   }
   std::cout << "-------------------------------------------" << std::endl;
 }
@@ -344,6 +357,8 @@ int main(int argc, char* argv[]) {
   sandbox::parse_uri("file:///home/example/.bashrc");
   sandbox::parse_uri("http://example.com?query");
   sandbox::parse_uri("http://example.com#fragment");
+  sandbox::parse_uri("http://example.com:8000?query");
+  sandbox::parse_uri("http://example.com:8000#fragment");
   sandbox::parse_uri("file:///home/example/.bashrc?query#fragment");
   sandbox::parse_uri("file:///home/example/.bashrc?query");
   sandbox::parse_uri("file:///home/example/.bashrc#fragment");
