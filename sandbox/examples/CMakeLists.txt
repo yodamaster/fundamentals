@@ -11,6 +11,7 @@ set(EXAMPLES
   make_heap
   binary_heap
   uri_parser
+  uri_parser_2
   )
 
 foreach(example ${EXAMPLES})
