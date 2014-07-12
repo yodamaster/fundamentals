@@ -1,13 +1,13 @@
 set(EXAMPLES
   #codecvt_test
   wstring_encoding
-  endianness
+  #endianness
   resolver
   daytime_client
   daytime_server
   mergesort
   quicksort
-  graph
+  #graph
   make_heap
   binary_heap
   uri_parser

@@ -55,7 +55,6 @@ bool is_pchar(const char *str, std::size_t length) {
     ((length == 0) &&
      (is_unreserved(*str) || is_sub_delim(*str) || (*str == ':') || (*str == '@')))
     ;
-
 }
 } // namespace
 
