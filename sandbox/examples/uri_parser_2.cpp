@@ -37,6 +37,14 @@ bool is_unreserved(char value) {
 }
 
 inline
+bool is_valid_scheme_character(char value) {
+  static const std::string valid_scheme_characters("+._");
+  return
+    (std::isalnum(value) != 0) ||
+    (std::string::npos != valid_scheme_characters.find(value));
+}
+
+inline
 bool is_pct_encoded(const char* str, std::size_t length) {
   if (length == 3) {
     return
@@ -126,11 +134,25 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
     }
 
     if (uri_parser_state::scheme == state) {
-      if (input[i] == ':') {
-        parts.scheme = boost::string_ref(&input[parsed_until], i - parsed_until);
-        state = uri_parser_state::colon;
+      // The scheme must start with an alpha character.  We expect its
+      // delimiter to be a ':', otherwise it must be a valid scheme
+      // character.
+      if ((parsed_until == i) && (std::isalpha(input[i]) == 0)) {
+        parsed_until = i;
+        return false;
+      }
+      else {
+        if (input[i] == ':') {
+          parts.scheme = boost::string_ref(&input[parsed_until], i - parsed_until);
+          state = uri_parser_state::colon;
+        }
+        else if (!is_valid_scheme_character(input[i])) {
+          parsed_until = i;
+          return false;
+        }
       }
     }
+
 
     if (uri_parser_state::colon == state) {
       parsed_until = i;
@@ -157,6 +179,7 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
           continue;
         }
         else {
+          parsed_until = i;
           return false;
         }
       }
@@ -268,7 +291,7 @@ bool uri_parse(const char *input, std::size_t size, std::size_t& parsed_until, u
             continue;
           }
           else if (std::isdigit(input[i]) == 0) {
-            std::cout << input[i] << std::endl;
+            parsed_until = i;
             return false;
           }
         }
@@ -422,8 +445,12 @@ int main(int argc, char* argv[]) {
   sandbox::parse_uri("telnet://192.0.2.16:80/");
   sandbox::parse_uri("urn:oasis:names:specification:docbook:dtd:xml:4.1.2");
   sandbox::parse_uri("");
+  sandbox::parse_uri("svn+ssh://example.com/");
 
   sandbox::parse_uri("scheme");
   sandbox::parse_uri("scheme:");
+  sandbox::parse_uri("://example.com/");
+  sandbox::parse_uri("3http://example.com/");
+  sandbox::parse_uri("ht%p://example.com/");
   return 0;
 }
