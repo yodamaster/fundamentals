@@ -27,7 +27,7 @@ namespace glynos {
 	   * into.
 	   */
 	  dist_type min_per_thread = 25;
-	  dist_type max_threads = length + (min_per_thread - 1) / min_per_thread;
+	  dist_type max_threads = (length + min_per_thread - 1) / min_per_thread;
 	  dist_type hardware_threads = std::thread::hardware_concurrency();
 	  dist_type num_threads = std::min(hardware_threads != 0? hardware_threads : 2, max_threads);
 	  dist_type block_size = length / num_threads;
